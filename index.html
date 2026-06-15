@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sasi Family</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sand: #E8DCC8;
+      --parchment: #F5EFE0;
+      --terracotta: #C4714A;
+      --terracotta-dark: #9E5535;
+      --olive: #7A7A52;
+      --ink: #2E2A20;
+      --muted: #6B6353;
+      --light-border: rgba(122, 122, 82, 0.25);
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background-color: var(--parchment);
+      color: var(--ink);
+    }
+
+    /* PASSWORD GATE */
+    #gate {
+      position: fixed;
+      inset: 0;
+      background: var(--parchment);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      gap: 1.2rem;
+    }
+    #gate h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+    }
+    #gate p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    #gate input {
+      padding: 0.65rem 1.2rem;
+      border: 1px solid var(--light-border);
+      background: white;
+      border-radius: 4px;
+      font-size: 1rem;
+      width: 240px;
+      color: var(--ink);
+      outline: none;
+    }
+    #gate input:focus { border-color: var(--terracotta); }
+    #gate button {
+      padding: 0.65rem 2rem;
+      background: var(--terracotta);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+    }
+    #gate button:hover { background: var(--terracotta-dark); }
+    #gate-error {
+      color: #a33;
+      font-size: 0.88rem;
+      min-height: 1rem;
+    }
+
+    /* MAIN SITE */
+    #site { display: none; }
+
+    /* NAV */
+    nav {
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      color: var(--sand);
+      font-size: 1.25rem;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--sand);
+      text-decoration: none;
+      font-size: 0.88rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; }
+
+    /* HERO */
+    .hero {
+      background: var(--sand);
+      padding: 5rem 2.5rem 4rem;
+      text-align: center;
+      border-bottom: 1px solid var(--light-border);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=1400&q=60');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.12;
+    }
+    .hero-content { position: relative; }
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      color: var(--ink);
+      line-height: 1.15;
+      margin-bottom: 0.6rem;
+    }
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      margin-bottom: 2rem;
+    }
+    .hero-divider {
+      width: 48px;
+      height: 2px;
+      background: var(--terracotta);
+      margin: 0 auto 2rem;
+    }
+
+    /* HERO IMAGE STRIP */
+    .hero-images {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2.5rem;
+    }
+    .hero-images img {
+      width: 180px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 3px;
+      opacity: 0.88;
+      filter: sepia(20%) saturate(90%);
+    }
+
+    /* ABOUT SECTION */
+    .about {
+      max-width: 760px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      margin-bottom: 0.75rem;
+    }
+    .about h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+    .about p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+
+    /* DIVIDER */
+    .ornament {
+      text-align: center;
+      color: var(--terracotta);
+      opacity: 0.4;
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 2rem 0;
+    }
+
+    /* FEATURE CARDS */
+    .features {
+      max-width: 1000px;
+      margin: 2rem auto 5rem;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: white;
+      border: 1px solid var(--light-border);
+      border-radius: 4px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      text-decoration: none;
+      color: var(--ink);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 24px rgba(46,42,32,0.08);
+    }
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+    }
+    .feature-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+    .feature-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--ink);
+      color: var(--sand);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.82rem;
+      opacity: 0.9;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PASSWORD GATE -->
+  <div id="gate">
+    <h1>משפחת סאסי &nbsp;·&nbsp; Sasi Family</h1>
+    <p>This site is for family members only. Please enter the password.</p>
+    <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter') checkPw()" />
+    <button onclick="checkPw()">Enter</button>
+    <span id="gate-error"></span>
+  </div>
+
+  <!-- MAIN SITE (hidden until password correct) -->
+  <div id="site">
+
+    <nav>
+      <a class="nav-brand" href="index.html">Sasi Family</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="family-tree.html">Family Tree</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-content">
+        <p class="hero-eyebrow">Tripoli · Libya · Israel · 1949</p>
+        <h1>The Sasi Family</h1>
+        <p class="hero-sub">Behor &amp; Chana &mdash; roots that travel, branches that grow</p>
+        <div class="hero-divider"></div>
+      </div>
+      <div class="hero-images">
+        <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=70" alt="Placeholder family photo" />
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=70" alt="Placeholder desert landscape" />
+        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&q=70" alt="Placeholder heritage photo" />
+        <img src="https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=400&q=70" alt="Placeholder family photo" />
+      </div>
+    </section>
+
+    <section class="about">
+      <p class="section-label">Our Story</p>
+      <h2>From Tripoli to a New Home</h2>
+      <p>The Sasi family traces its roots to the Jewish community of Tripoli, Libya — a community with centuries of history, rich traditions, and a deep sense of belonging. In 1949, Behor and Chana Sasi made the courageous journey to Israel, carrying with them their heritage, their faith, and a vision for the generations to come.</p>
+      <p>This site is a living gathering place for the family they built — a space to share memories, celebrate milestones, and stay connected no matter where in the world we are.</p>
+      <div class="ornament">· · ·</div>
+    </section>
+
+    <div class="features">
+      <a href="gallery.html" class="feature-card">
+        <div class="feature-icon">🖼</div>
+        <h3>Gallery</h3>
+        <p>Browse and download family photos from across the generations.</p>
+      </a>
+      <a href="events.html" class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>Events</h3>
+        <p>Upcoming weddings, gatherings, and family celebrations.</p>
+      </a>
+      <a href="family-tree.html" class="feature-card">
+        <div class="feature-icon">🌳</div>
+        <h3>Family Tree</h3>
+        <p>Explore the full interactive Sasi family tree.</p>
+      </a>
+    </div>
+
+    <footer>
+      &copy; Sasi Family &nbsp;·&nbsp; Built with love
+    </footer>
+
+  </div>
+
+  <script>
+    const FAMILY_PASSWORD = "sasi1949";
+
+    function checkPw() {
+      const val = document.getElementById('pw-input').value;
+      if (val === FAMILY_PASSWORD) {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('site').style.display = 'block';
+        sessionStorage.setItem('sasi_auth', '1');
+      } else {
+        document.getElementById('gate-error').textContent = 'Incorrect password. Please try again.';
+        document.getElementById('pw-input').value = '';
+      }
+    }
+
+    if (sessionStorage.getItem('sasi_auth') === '1') {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('site').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
