@@ -30,10 +30,10 @@
     .nav-links a.active { opacity: 1; border-bottom: 1px solid var(--terracotta); padding-bottom: 2px; }
 
     /* LAYOUT */
-    .page { display: flex; gap: 0; min-height: calc(100vh - 60px); }
+    .page { display: flex; gap: 0; height: calc(100vh - 60px); overflow: hidden; }
 
     /* CALENDAR SIDE */
-    .cal-side { flex: 1; padding: 2rem 2rem 2rem 2.5rem; }
+    .cal-side { flex: 1; padding: 2rem 2rem 2rem 2.5rem; overflow-y: auto; }
     .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
     .cal-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); }
     .cal-nav { display: flex; gap: .5rem; }
@@ -54,13 +54,13 @@
     .cal-event.custom { background: #FFF0E8; color: #8B4020; border-left: 2px solid var(--event); }
 
     /* SIDEBAR */
-    .sidebar { width: 280px; flex-shrink: 0; border-left: 1px solid var(--light-border); background: white; padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .sidebar { width: 280px; flex-shrink: 0; border-left: 1px solid var(--light-border); background: white; padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; height: 100%; overflow: hidden; }
     .sidebar-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--ink); margin-bottom: .75rem; }
     .legend { display: flex; flex-direction: column; gap: .5rem; }
     .legend-item { display: flex; align-items: center; gap: .5rem; font-size: .82rem; color: var(--muted); }
     .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-    .upcoming-list { display: flex; flex-direction: column; gap: .75rem; flex: 1; overflow-y: auto; }
+    .upcoming-list { display: flex; flex-direction: column; gap: .75rem; flex: 1; overflow-y: auto; min-height: 0; }
     .upcoming-item { padding: .65rem .75rem; border-radius: 4px; border-left: 3px solid var(--terracotta); background: #fffaf6; }
     .upcoming-item.birthday-item { border-left-color: var(--birthday); background: #f7f8ff; }
     .upcoming-name { font-size: .88rem; font-weight: 700; color: var(--ink); }
@@ -118,7 +118,6 @@
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div>
-      <div class="sidebar-title">Legend</div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:#EEF2FF;border:2px solid #7A90B8;"></div> Birthday</div>
         <div class="legend-item"><div class="legend-dot" style="background:#FFF0E8;border:2px solid #C4714A;"></div> Family Event</div>
@@ -354,7 +353,7 @@ function formatDate(d){
 let adminKeyBuffer = '';
 document.addEventListener('keydown', e=>{
   adminKeyBuffer += e.key;
-  if(adminKeyBuffer.includes('sasiadmin')){
+  if(adminKeyBuffer.includes('sasiAdmin')){
     openAdmin();
     adminKeyBuffer='';
   }
