@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Events · Sasi Family</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sand: #E8DCC8;
+      --parchment: #F5EFE0;
+      --terracotta: #C4714A;
+      --terracotta-dark: #9E5535;
+      --olive: #7A7A52;
+      --ink: #2E2A20;
+      --muted: #6B6353;
+      --light-border: rgba(122,122,82,0.25);
+      --birthday: #7A90B8;
+      --event: #C4714A;
+    }
+    body { font-family: 'Lato', sans-serif; background: var(--parchment); color: var(--ink); min-height: 100vh; }
+
+    /* NAV */
+    nav { background: var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; height: 60px; position: sticky; top: 0; z-index: 100; }
+    .nav-brand { font-family: 'Playfair Display', serif; color: var(--sand); font-size: 1.25rem; letter-spacing: .08em; text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--sand); text-decoration: none; font-size: .88rem; letter-spacing: .1em; text-transform: uppercase; opacity: .8; transition: opacity .2s; }
+    .nav-links a:hover { opacity: 1; }
+    .nav-links a.active { opacity: 1; border-bottom: 1px solid var(--terracotta); padding-bottom: 2px; }
+
+    /* LAYOUT */
+    .page { display: flex; gap: 0; min-height: calc(100vh - 60px); }
+
+    /* CALENDAR SIDE */
+    .cal-side { flex: 1; padding: 2rem 2rem 2rem 2.5rem; }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .cal-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); }
+    .cal-nav { display: flex; gap: .5rem; }
+    .cal-btn { background: none; border: 1px solid var(--light-border); border-radius: 4px; width: 36px; height: 36px; cursor: pointer; font-size: 1.1rem; color: var(--ink); display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    .cal-btn:hover { background: var(--sand); }
+
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--light-border); border: 1px solid var(--light-border); border-radius: 6px; overflow: hidden; }
+    .cal-dow { background: var(--ink); color: var(--sand); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; text-align: center; padding: .5rem 0; }
+    .cal-cell { background: white; min-height: 90px; padding: 6px; position: relative; vertical-align: top; }
+    .cal-cell.other-month { background: #faf8f4; }
+    .cal-cell.today { background: #fffbf5; }
+    .cal-cell.today .day-num { background: var(--terracotta); color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+    .day-num { font-size: .78rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+    .cal-cell.other-month .day-num { color: #ccc; }
+
+    .cal-event { font-size: .68rem; border-radius: 3px; padding: 2px 5px; margin-bottom: 2px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default; }
+    .cal-event.birthday { background: #EEF2FF; color: #3A5BB8; border-left: 2px solid var(--birthday); }
+    .cal-event.custom { background: #FFF0E8; color: #8B4020; border-left: 2px solid var(--event); }
+
+    /* SIDEBAR */
+    .sidebar { width: 280px; flex-shrink: 0; border-left: 1px solid var(--light-border); background: white; padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .sidebar-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--ink); margin-bottom: .75rem; }
+    .legend { display: flex; flex-direction: column; gap: .5rem; }
+    .legend-item { display: flex; align-items: center; gap: .5rem; font-size: .82rem; color: var(--muted); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+    .upcoming-list { display: flex; flex-direction: column; gap: .75rem; flex: 1; overflow-y: auto; }
+    .upcoming-item { padding: .65rem .75rem; border-radius: 4px; border-left: 3px solid var(--terracotta); background: #fffaf6; }
+    .upcoming-item.birthday-item { border-left-color: var(--birthday); background: #f7f8ff; }
+    .upcoming-name { font-size: .88rem; font-weight: 700; color: var(--ink); }
+    .upcoming-date { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+    /* ADMIN PANEL */
+    #admin-panel { display: none; position: fixed; inset: 0; background: rgba(46,42,32,.5); z-index: 500; align-items: center; justify-content: center; }
+    #admin-panel.open { display: flex; }
+    .admin-box { background: var(--parchment); border-radius: 8px; padding: 2rem; width: 360px; box-shadow: 0 20px 60px rgba(46,42,32,.2); }
+    .admin-box h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 1.25rem; color: var(--ink); }
+    .admin-box label { font-size: .82rem; color: var(--muted); display: block; margin-bottom: .3rem; margin-top: .75rem; letter-spacing: .05em; text-transform: uppercase; }
+    .admin-box input { width: 100%; padding: .6rem .9rem; border: 1px solid var(--light-border); border-radius: 4px; font-size: .95rem; font-family: 'Lato', sans-serif; background: white; color: var(--ink); outline: none; }
+    .admin-box input:focus { border-color: var(--terracotta); }
+    .admin-actions { display: flex; gap: .75rem; margin-top: 1.25rem; }
+    .btn-primary { flex: 1; padding: .65rem; background: var(--terracotta); color: white; border: none; border-radius: 4px; font-size: .9rem; cursor: pointer; }
+    .btn-primary:hover { background: var(--terracotta-dark); }
+    .btn-cancel { padding: .65rem 1rem; background: none; border: 1px solid var(--light-border); border-radius: 4px; font-size: .9rem; cursor: pointer; color: var(--muted); }
+
+    .admin-events-list { margin-top: 1rem; max-height: 180px; overflow-y: auto; }
+    .admin-event-row { display: flex; align-items: center; justify-content: space-between; font-size: .82rem; padding: .4rem 0; border-bottom: 1px solid var(--light-border); }
+    .admin-event-row:last-child { border-bottom: none; }
+    .del-btn { background: none; border: none; color: #a33; cursor: pointer; font-size: 1rem; padding: 0 4px; }
+
+    #site { display: none; }
+  </style>
+</head>
+<body>
+
+<div id="site">
+
+<nav>
+  <a class="nav-brand" href="index.html">Sasi Family</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="events.html" class="active">Events</a></li>
+    <li><a href="family-tree.html">Family Tree</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <!-- CALENDAR -->
+  <div class="cal-side">
+    <div class="cal-header">
+      <div class="cal-title" id="cal-title"></div>
+      <div class="cal-nav">
+        <button class="cal-btn" onclick="changeMonth(-1)">&#8249;</button>
+        <button class="cal-btn" onclick="changeMonth(1)">&#8250;</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <div class="sidebar-title">Legend</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#EEF2FF;border:2px solid #7A90B8;"></div> Birthday</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FFF0E8;border:2px solid #C4714A;"></div> Family Event</div>
+      </div>
+    </div>
+    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+      <div class="sidebar-title">Upcoming Events</div>
+      <div class="upcoming-list" id="upcoming-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <div class="admin-box">
+    <h3>Add Family Event</h3>
+    <label>Event Name</label>
+    <input type="text" id="ev-name" placeholder="e.g. Ethan and Yuval's Wedding" />
+    <label>Date</label>
+    <input type="date" id="ev-date" />
+    <div class="admin-actions">
+      <button class="btn-primary" onclick="addEvent()">Add Event</button>
+      <button class="btn-cancel" onclick="closeAdmin()">Cancel</button>
+    </div>
+    <div class="admin-events-list" id="admin-events-list"></div>
+  </div>
+</div>
+
+</div><!-- #site -->
+
+<script>
+if(sessionStorage.getItem('sasi_auth')!=='1'){
+  window.location.href='index.html';
+} else {
+  document.getElementById('site').style.display='block';
+}
+
+// ── BIRTHDAYS from family tree ──
+const BIRTHDAYS = [
+  {name:'Shlomi Sasi', month:7, day:2},
+  {name:'Guy Sasi', month:11, day:1},
+  {name:'Yonit Sasi', month:2, day:24},
+  {name:'Lihi Sasi', month:6, day:4},
+  {name:'Tahel Sasi', month:7, day:29},
+  {name:'Harel Sasi', month:9, day:12},
+  {name:'Alfonso Sasi', month:11, day:26},
+  {name:'Eti Sasi (Alfonso)', month:11, day:13},
+  {name:'Hanit Ben Bassat', month:10, day:23},
+  {name:'Tzachi Ben Bassat', month:1, day:22},
+  {name:'Ron Ben Bassat', month:2, day:17},
+  {name:'Aiden Ben Bassat', month:3, day:5},
+  {name:'Mia Ben Bassat', month:10, day:13},
+  {name:'Yifat Sasi', month:7, day:8},
+  {name:'Eilon Sasi', month:8, day:12},
+  {name:'Lily Sasi', month:1, day:28},
+  {name:'Ori Sasi', month:12, day:23},
+  {name:'Zohar Sasi', month:10, day:10},
+  {name:'Oshri Sasi', month:5, day:15},
+  {name:'Talia Sasi', month:12, day:20},
+  {name:'Nissim Sasi', month:4, day:28},
+  {name:'Dan Sasi', month:12, day:11},
+  {name:'Tal Sasi', month:12, day:11},
+  {name:'Amit Sasi (Nissim)', month:10, day:17},
+  {name:'Gali Boaron', month:4, day:3},
+  {name:'Berto Boaron', month:12, day:8},
+  {name:'Limor Amira', month:1, day:7},
+  {name:'Dudik Amira', month:1, day:15},
+  {name:'Avia Amira', month:11, day:21},
+  {name:'Hilel Amira', month:11, day:27},
+  {name:'Nevo Amira', month:7, day:13},
+  {name:'Imri Amira', month:7, day:13},
+  {name:'Hanit Boaron', month:9, day:20},
+  {name:'Hila Boaron', month:2, day:17},
+  {name:'Dudu Sasi', month:8, day:15},
+  {name:'Ben Sasi', month:7, day:17},
+  {name:'Rotem Sasi', month:2, day:14},
+  {name:'Dor Sasi', month:2, day:15},
+  {name:'Adi Sasi', month:6, day:19},
+  {name:'Avi Sasi', month:8, day:20},
+  {name:'Orna Sasi', month:4, day:6},
+  {name:'Noa Sasi', month:7, day:16},
+  {name:'Inbal', month:11, day:6},
+  {name:'Amit Sasi (Avi)', month:10, day:3},
+  {name:'Liz Peck', month:12, day:5},
+  {name:'Robert Peck', month:11, day:28},
+  {name:'Ethan Peck', month:7, day:15},
+  {name:'Yuval Peck', month:1, day:4},
+  {name:'Jonathan Peck', month:2, day:19},
+  {name:'Zoey Peck', month:4, day:17},
+  {name:'Amos Sasi', month:4, day:25},
+  {name:'Anat Sasi', month:1, day:8},
+  {name:'Gili Shamian', month:12, day:27},
+  {name:'Amit Shamian', month:11, day:8},
+  {name:'Guy Sasi (Amos)', month:9, day:10},
+  {name:'Sari Cidor', month:7, day:14},
+  {name:'Omri Cidor', month:6, day:13},
+  {name:'Dana Cidor', month:9, day:11},
+  {name:'Daniel Cidor', month:6, day:11},
+  {name:'Yuval Cidor', month:12, day:12},
+  {name:'Ido Cidor', month:3, day:4},
+  {name:'Lital Cidor', month:5, day:20},
+  {name:'Ethan Cidor', month:6, day:20},
+  {name:'Ori Cidor', month:12, day:31},
+  {name:'Abigail Cidor', month:1, day:31},
+  {name:'Benny Sasi', month:9, day:3},
+  {name:'Eti Sasi (Benny)', month:1, day:24},
+  {name:'Danielle Sasi', month:10, day:17},
+  {name:'Lior Sasi', month:8, day:25},
+  {name:'Yoni Sasi', month:3, day:14},
+  {name:'Tzvika Sasi', month:1, day:11},
+  {name:'Merav Sasi', month:9, day:22},
+  {name:'Naama Bornstein', month:9, day:17},
+  {name:'Itamar Bornstein', month:11, day:26},
+  {name:'Tamar Sasi', month:9, day:19},
+];
+
+// ── CUSTOM EVENTS (stored in localStorage) ──
+function loadCustomEvents(){
+  try { return JSON.parse(localStorage.getItem('sasi_events')||'[]'); } catch(e){ return []; }
+}
+function saveCustomEvents(evs){
+  localStorage.setItem('sasi_events', JSON.stringify(evs));
+}
+
+let currentYear, currentMonth;
+const today = new Date();
+
+function init(){
+  currentYear = today.getFullYear();
+  currentMonth = today.getMonth(); // 0-indexed
+  render();
+}
+
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function changeMonth(dir){
+  currentMonth += dir;
+  if(currentMonth > 11){ currentMonth = 0; currentYear++; }
+  if(currentMonth < 0){ currentMonth = 11; currentYear--; }
+  render();
+}
+
+function getBirthdaysForCell(year, month, day){
+  // month is 0-indexed here
+  return BIRTHDAYS.filter(b => b.month === month+1 && b.day === day);
+}
+
+function getCustomEventsForCell(year, month, day){
+  return loadCustomEvents().filter(e => {
+    const d = new Date(e.date + 'T00:00:00');
+    return d.getFullYear()===year && d.getMonth()===month && d.getDate()===day;
+  });
+}
+
+function render(){
+  document.getElementById('cal-title').textContent = MONTHS[currentMonth] + ' ' + currentYear;
+
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth+1, 0).getDate();
+  const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
+
+  let html = '';
+  // Day of week headers
+  DAYS.forEach(d => { html += `<div class="cal-dow">${d}</div>`; });
+
+  // Prev month fill
+  for(let i=0; i<firstDay; i++){
+    const d = daysInPrev - firstDay + 1 + i;
+    html += `<div class="cal-cell other-month"><div class="day-num">${d}</div></div>`;
+  }
+
+  // Current month
+  for(let d=1; d<=daysInMonth; d++){
+    const isToday = d===today.getDate() && currentMonth===today.getMonth() && currentYear===today.getFullYear();
+    const bdays = getBirthdaysForCell(currentYear, currentMonth, d);
+    const cevs = getCustomEventsForCell(currentYear, currentMonth, d);
+    let evHtml = '';
+    cevs.forEach(e => { evHtml += `<div class="cal-event custom" title="${e.name}">${e.name}</div>`; });
+    bdays.forEach(b => { evHtml += `<div class="cal-event birthday" title="${b.name}'s Birthday">🎂 ${b.name}</div>`; });
+    html += `<div class="cal-cell${isToday?' today':''}"><div class="day-num">${d}</div>${evHtml}</div>`;
+  }
+
+  // Next month fill
+  const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+  for(let i=1; i <= totalCells - firstDay - daysInMonth; i++){
+    html += `<div class="cal-cell other-month"><div class="day-num">${i}</div></div>`;
+  }
+
+  document.getElementById('cal-grid').innerHTML = html;
+  renderUpcoming();
+}
+
+function renderUpcoming(){
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const items = [];
+
+  // Next 90 days of birthdays
+  for(let offset=0; offset<90; offset++){
+    const d = new Date(now);
+    d.setDate(d.getDate()+offset);
+    const m = d.getMonth()+1, day = d.getDate();
+    BIRTHDAYS.filter(b=>b.month===m&&b.day===day).forEach(b=>{
+      items.push({type:'birthday', name:`🎂 ${b.name}`, date:d, label: formatDate(d)});
+    });
+  }
+
+  // All future custom events
+  loadCustomEvents().forEach(e=>{
+    const d = new Date(e.date+'T00:00:00');
+    if(d >= now) items.push({type:'custom', name:e.name, date:d, label: formatDate(d)});
+  });
+
+  items.sort((a,b)=>a.date-b.date);
+
+  const html = items.slice(0,30).map(it=>`
+    <div class="upcoming-item ${it.type==='birthday'?'birthday-item':''}">
+      <div class="upcoming-name">${it.name}</div>
+      <div class="upcoming-date">${it.label}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('upcoming-list').innerHTML = html || '<div style="font-size:.85rem;color:var(--muted);">No upcoming events.</div>';
+}
+
+function formatDate(d){
+  return MONTHS[d.getMonth()] + ' ' + d.getDate();
+}
+
+// ── ADMIN ──
+let adminKeyBuffer = '';
+document.addEventListener('keydown', e=>{
+  adminKeyBuffer += e.key;
+  if(adminKeyBuffer.includes('sasiadmin')){
+    openAdmin();
+    adminKeyBuffer='';
+  }
+  if(adminKeyBuffer.length > 20) adminKeyBuffer = adminKeyBuffer.slice(-20);
+});
+
+function openAdmin(){
+  document.getElementById('admin-panel').classList.add('open');
+  renderAdminList();
+}
+function closeAdmin(){
+  document.getElementById('admin-panel').classList.remove('open');
+  document.getElementById('ev-name').value='';
+  document.getElementById('ev-date').value='';
+}
+document.getElementById('admin-panel').addEventListener('click', function(e){
+  if(e.target===this) closeAdmin();
+});
+
+function addEvent(){
+  const name = document.getElementById('ev-name').value.trim();
+  const date = document.getElementById('ev-date').value;
+  if(!name||!date){ alert('Please enter both a name and a date.'); return; }
+  const evs = loadCustomEvents();
+  evs.push({name, date});
+  saveCustomEvents(evs);
+  document.getElementById('ev-name').value='';
+  document.getElementById('ev-date').value='';
+  renderAdminList();
+  render();
+}
+
+function deleteEvent(i){
+  const evs = loadCustomEvents();
+  evs.splice(i,1);
+  saveCustomEvents(evs);
+  renderAdminList();
+  render();
+}
+
+function renderAdminList(){
+  const evs = loadCustomEvents();
+  if(!evs.length){ document.getElementById('admin-events-list').innerHTML=''; return; }
+  const html = '<div style="font-size:.78rem;color:var(--muted);margin-top:.75rem;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.08em;">Saved Events</div>' +
+    evs.map((e,i)=>`
+      <div class="admin-event-row">
+        <span>${e.name} &mdash; ${e.date}</span>
+        <button class="del-btn" onclick="deleteEvent(${i})">&#10005;</button>
+      </div>
+    `).join('');
+  document.getElementById('admin-events-list').innerHTML = html;
+}
+
+init();
+</script>
+</body>
+</html>
