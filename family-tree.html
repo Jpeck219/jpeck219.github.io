@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Tree · Sasi Family</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+
+/* SITE NAV */
+#sitenav{background:#2E2A20;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;position:sticky;top:0;z-index:100;}
+.nav-brand{font-family:'Playfair Display',serif;color:#E8DCC8;font-size:1.25rem;letter-spacing:.08em;text-decoration:none;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:#E8DCC8;text-decoration:none;font-size:.88rem;letter-spacing:.1em;text-transform:uppercase;opacity:.8;transition:opacity .2s;}
+.nav-links a:hover{opacity:1;}
+.nav-links a.active{opacity:1;border-bottom:1px solid #C4714A;padding-bottom:2px;}
+/* hide site until auth */
+#sitecontents{display:none;}
+
+:root{
+  --sand:#F5EFE6;--sand2:#E8DDD0;
+  --bark:#6B4F3A;--bark-l:#9B7355;--bark-p:#C4A882;
+  --ink:#2C2118;--ink-m:#6B5C4E;--ink-s:#9E8E80;
+  --white:#FDFAF7;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--sand);font-family:'Inter',sans-serif;color:var(--ink);}
+
+.hdr{background:var(--white);border-bottom:1.5px solid var(--sand2);padding:18px 28px 14px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:50;}
+.eye{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--bark-l);margin-bottom:4px;}
+.title{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;}
+.title span{color:var(--bark);}
+.sub{font-size:12px;color:var(--ink-s);margin-top:3px;}
+.stats{display:flex;gap:16px;}
+.sn{font-family:'Playfair Display',serif;font-size:19px;font-weight:500;color:var(--bark);text-align:center;line-height:1;}
+.sl{font-size:10px;color:var(--ink-s);text-align:center;margin-top:2px;}
+
+.leg{display:flex;align-items:center;gap:5px;padding:7px 28px;background:var(--white);border-bottom:1px solid var(--sand2);flex-wrap:wrap;position:sticky;top:62px;z-index:49;}
+.li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-m);}
+.ld{width:8px;height:8px;border-radius:50%;}
+.lsep{width:1px;height:12px;background:var(--sand2);margin:0 3px;}
+.lnote{font-size:11px;color:var(--ink-s);margin-left:auto;font-style:italic;}
+
+.scroll{overflow-x:auto;padding:28px 32px 60px;}
+
+.card{border-radius:9px;padding:7px 10px 6px;cursor:pointer;position:relative;width:112px;flex-shrink:0;transition:transform .13s,box-shadow .13s;user-select:none;}
+.card:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(44,33,24,.14);}
+.card.g1{background:#FFF8F0;border:1px solid #C4A882;}
+.card.g2{background:#F2F6EE;border:1px solid #7A8B6F;}
+.card.g3{background:#EEF3FF;border:1px solid #7A90B8;}
+.card.sp{background:#FEF6FB;border:1px solid #C49AB8;opacity:.88;}
+.fn{font-size:11px;font-weight:500;line-height:1.2;color:var(--ink);}
+.ln{font-size:9px;color:var(--ink-m);margin-top:1px;}
+.hb{font-size:9px;color:var(--ink-s);direction:rtl;margin-top:3px;border-top:.5px solid rgba(0,0,0,.07);padding-top:2px;}
+.ag{position:absolute;top:6px;right:7px;font-size:9px;color:var(--ink-s);}
+
+.root-card{background:var(--ink);border-radius:12px;padding:10px 24px;text-align:center;box-shadow:0 4px 14px rgba(44,33,24,.16);flex-shrink:0;}
+.rn{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--white);}
+.rh{font-size:11px;color:#C4A882;margin-top:2px;direction:rtl;}
+
+.cdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;align-self:center;margin-top:2px;}
+.cdot.c1{background:#C4A882;}
+.cdot.c2{background:#A8B89E;}
+.bsep{width:36px;flex-shrink:0;}
+.fsep{width:20px;flex-shrink:0;}
+.vgap{height:32px;}
+.node{display:flex;flex-direction:column;align-items:center;}
+.g3spacer{height:56px;width:112px;flex-shrink:0;}
+
+/* Modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(44,33,24,.38);z-index:200;align-items:center;justify-content:center;}
+.ov.open{display:flex;}
+.dc{background:var(--white);border-radius:16px;padding:22px 22px 18px;max-width:320px;width:90%;box-shadow:0 20px 60px rgba(44,33,24,.22);position:relative;}
+.dx{position:absolute;top:11px;right:13px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink-s);line-height:1;}
+.dav{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:17px;font-weight:500;flex-shrink:0;}
+.dh{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.dfn{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--ink);line-height:1.15;}
+.dhb{font-size:12px;color:var(--ink-s);direction:rtl;margin-top:3px;}
+.dbg{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:500;margin-bottom:12px;}
+.dfs{display:flex;flex-direction:column;gap:6px;}
+.dr{display:flex;align-items:flex-start;gap:10px;font-size:12px;}
+.dl{width:54px;flex-shrink:0;font-size:10px;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;padding-top:1px;}
+.dv{color:var(--ink);word-break:break-all;}
+.dv a{color:var(--bark);text-decoration:none;}
+.dd{height:.5px;background:var(--sand2);margin:5px 0;}
+</style>
+</head>
+<body>
+
+<div id="sitecontents">
+
+<!-- SITE NAV -->
+<nav id="sitenav">
+  <a class="nav-brand" href="index.html">Sasi Family</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="family-tree.html" class="active">Family Tree</a></li>
+  </ul>
+</nav>
+
+<div class="hdr">
+  <div>
+    <div class="eye">Family Tree · All 12 Branches</div>
+    <div class="title">The <span>Sasi</span> Family</div>
+    <div class="sub">Descendants of Behor &amp; Chana &nbsp;·&nbsp; בהור וחנה</div>
+  </div>
+  <div class="stats">
+    <div><div class="sn">12</div><div class="sl">Branches</div></div>
+    <div><div class="sn">3</div><div class="sl">Generations</div></div>
+    <div><div class="sn">100+</div><div class="sl">Members</div></div>
+  </div>
+</div>
+
+<div class="leg">
+  <div class="li"><div class="ld" style="background:#C4A882"></div>1st generation</div>
+  <div class="lsep"></div>
+  <div class="li"><div class="ld" style="background:#7A8B6F"></div>2nd generation</div>
+  <div class="lsep"></div>
+  <div class="li"><div class="ld" style="background:#7A90B8"></div>3rd generation</div>
+  <div class="lsep"></div>
+  <div class="li"><div class="ld" style="background:#C49AB8"></div>Spouse / partner</div>
+  <div class="lnote">Click any card for details · Scroll right to see all 12 branches</div>
+</div>
+
+<div class="scroll">
+<div style="position:relative;display:inline-block;" id="treewrap">
+<svg id="svg" style="position:absolute;top:0;left:0;pointer-events:none;z-index:1;overflow:visible;"></svg>
+<div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+
+  <!-- ROOT -->
+  <div class="root-card" id="rc">
+    <div class="rn">Behor &amp; Chana</div>
+    <div class="rh">בהור וחנה</div>
+  </div>
+  <div class="vgap"></div>
+
+  <!-- ALL 12 BRANCHES -->
+  <div style="display:flex;flex-direction:row;align-items:flex-start;">
+
+<!-- ══ B1: Shlomi & Yudit ══ -->
+<div class="node" id="b1">
+  <div style="display:flex;align-items:flex-start;" id="b1c">
+    <div class="card g1" onclick="sd('shlomi')"><div class="fn">Shlomi</div><div class="ln">Sasi</div><div class="hb">שלומי סאסי</div><div class="ag">79</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('yudit')"><div class="fn">Yudit</div><div class="ln">Sasi</div><div class="hb">יהודית סאסי</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f11">
+      <div style="display:flex;align-items:flex-start;" id="f11c">
+        <div class="card g2" onclick="sd('yaron')"><div class="fn">Yaron</div><div class="ln">Sasi</div><div class="hb">ירון סאסי</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('hila_s')"><div class="fn">Hila</div><div class="ln">Sasi</div><div class="hb">הילה סאסי</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g11">
+        <div class="card g3" onclick="sd('kfir')"><div class="fn">Kfir</div><div class="ln">Sasi</div><div class="hb">כפיר סאסי</div></div>
+        <div class="card g3" onclick="sd('noam')"><div class="fn">Noam</div><div class="ln">Sasi</div><div class="hb">נועם סאסי</div></div>
+      </div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f12">
+      <div style="display:flex;align-items:flex-start;" id="f12c">
+        <div class="card g2" onclick="sd('guy_1')"><div class="fn">Guy</div><div class="ln">Sasi</div><div class="hb">גיא סאסי</div><div class="ag">51</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('yonit')"><div class="fn">Yonit</div><div class="ln">Sasi</div><div class="hb">יונית סאסי</div><div class="ag">42</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g12">
+        <div class="card g3" onclick="sd('lihi')"><div class="fn">Lihi</div><div class="ln">Sasi</div><div class="hb">ליהי סאסי</div><div class="ag">17</div></div>
+        <div class="card g3" onclick="sd('tahel')"><div class="fn">Tahel</div><div class="ln">Sasi</div><div class="hb">תהל סאסי</div><div class="ag">15</div></div>
+        <div class="card g3" onclick="sd('harel')"><div class="fn">Harel</div><div class="ln">Sasi</div><div class="hb">הראל סאסי</div><div class="ag">14</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B2: Alfonso & Eti ══ -->
+<div class="node" id="b2">
+  <div style="display:flex;align-items:flex-start;" id="b2c">
+    <div class="card g1" onclick="sd('alfonso')"><div class="fn">Alfonso</div><div class="ln">Sasi</div><div class="hb">אלפונסו סאסי</div><div class="ag">76</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('eti_2')"><div class="fn">Eti</div><div class="ln">Sasi</div><div class="hb">אתי סאסי</div><div class="ag">72</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f21">
+      <div style="display:flex;align-items:flex-start;" id="f21c">
+        <div class="card g2" onclick="sd('hanit')"><div class="fn">Hanit</div><div class="ln">Ben Bassat</div><div class="hb">חנית בן בסט</div><div class="ag">52</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('tzachi')"><div class="fn">Tzachi</div><div class="ln">Ben Bassat</div><div class="hb">צחי בן בסט</div><div class="ag">54</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g21">
+        <div class="card g3" onclick="sd('ron')"><div class="fn">Ron</div><div class="ln">Ben Bassat</div><div class="hb">רון בן בסט</div><div class="ag">23</div></div>
+        <div class="card g3" onclick="sd('aiden')"><div class="fn">Aiden</div><div class="ln">Ben Bassat</div><div class="hb">עדן בן בסט</div><div class="ag">21</div></div>
+        <div class="card g3" onclick="sd('mia')"><div class="fn">Mia</div><div class="ln">Ben Bassat</div><div class="hb">מיה בן בסט</div><div class="ag">16</div></div>
+      </div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f22">
+      <div class="card g2" onclick="sd('yifat')"><div class="fn">Yifat</div><div class="ln">Sasi</div><div class="hb">יפעת סאסי</div><div class="ag">49</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f23">
+      <div style="display:flex;align-items:flex-start;" id="f23c">
+        <div class="card g2" onclick="sd('eilon')"><div class="fn">Eilon</div><div class="ln">Sasi</div><div class="hb">אילון סאסי</div><div class="ag">48</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('lily')"><div class="fn">Lily</div><div class="ln">Sasi</div><div class="hb">לילי סאסי</div><div class="ag">48</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g23">
+        <div class="card g3" onclick="sd('ori_s')"><div class="fn">Ori</div><div class="ln">Sasi</div><div class="hb">אורי סאסי</div><div class="ag">21</div></div>
+        <div class="card g3" onclick="sd('zohar')"><div class="fn">Zohar</div><div class="ln">Sasi</div><div class="hb">זוהר סאסי</div><div class="ag">18</div></div>
+        <div class="card g3" onclick="sd('oshri')"><div class="fn">Oshri</div><div class="ln">Sasi</div><div class="hb">אושרי סאסי</div><div class="ag">15</div></div>
+        <div class="card g3" onclick="sd('talia')"><div class="fn">Talia</div><div class="ln">Sasi</div><div class="hb">טליה סאסי</div><div class="ag">11</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B3: Nissim & Eti ══ -->
+<div class="node" id="b3">
+  <div style="display:flex;align-items:flex-start;" id="b3c">
+    <div class="card g1" onclick="sd('nissim')"><div class="fn">Nissim</div><div class="ln">Sasi</div><div class="hb">נסים סאסי</div><div class="ag">75</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('eti_3')"><div class="fn">Eti</div><div class="ln">Sasi</div><div class="hb">אתי סאסי</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f31">
+      <div class="card g2" onclick="sd('dan')"><div class="fn">Dan</div><div class="ln">Sasi</div><div class="hb">דן סאסי</div><div class="ag">31</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f32">
+      <div style="display:flex;align-items:flex-start;" id="f32c">
+        <div class="card g2" onclick="sd('tal')"><div class="fn">Tal</div><div class="ln">Sasi</div><div class="hb">טל סאסי</div><div class="ag">31</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('amit_n')"><div class="fn">Amit</div><div class="ln">Sasi</div><div class="hb">עמית סאסי</div><div class="ag">29</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B4: Gali & Berto Boaron ══ -->
+<div class="node" id="b4">
+  <div style="display:flex;align-items:flex-start;" id="b4c">
+    <div class="card g1" onclick="sd('gali')"><div class="fn">Gali</div><div class="ln">Boaron</div><div class="hb">גלי בוארון</div><div class="ag">73</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('berto')"><div class="fn">Berto</div><div class="ln">Boaron</div><div class="hb">ברטו בוארון</div><div class="ag">78</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f41">
+      <div style="display:flex;align-items:flex-start;" id="f41c">
+        <div class="card g2" onclick="sd('limor')"><div class="fn">Limor</div><div class="ln">Amira</div><div class="hb">לימור אמירה</div><div class="ag">50</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('dudik')"><div class="fn">Dudik</div><div class="ln">Amira</div><div class="hb">דודיק אמירה</div><div class="ag">45</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g41">
+        <div class="card g3" onclick="sd('avia')"><div class="fn">Avia</div><div class="ln">Amira</div><div class="hb">אביה אמירה</div><div class="ag">11</div></div>
+        <div class="card g3" onclick="sd('hilel')"><div class="fn">Hilel</div><div class="ln">Amira</div><div class="hb">הלל אמירה</div><div class="ag">10</div></div>
+        <div class="card g3" onclick="sd('nevo')"><div class="fn">Nevo</div><div class="ln">Amira</div><div class="hb">נבו אמירה</div><div class="ag">8</div></div>
+        <div class="card g3" onclick="sd('imri')"><div class="fn">Imri</div><div class="ln">Amira</div><div class="hb">אמרי אמירה</div><div class="ag">8</div></div>
+      </div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f42">
+      <div class="card g2" onclick="sd('hanit_b')"><div class="fn">Hanit</div><div class="ln">Boaron</div><div class="hb">חנית בוארון</div><div class="ag">47</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f43">
+      <div class="card g2" onclick="sd('hila_b')"><div class="fn">Hila</div><div class="ln">Boaron</div><div class="hb">הילה בוארון</div><div class="ag">44</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B5: Yossi & Dorit ══
+     Dudu: Moran on left, Daria on right, single Dudu card in center
+     Liad+Eilay under Moran–Dudu, Emma+Elle under Dudu–Daria
+══ -->
+<div class="node" id="b5">
+  <div style="display:flex;align-items:flex-start;" id="b5c">
+    <div class="card g1" onclick="sd('yossi')"><div class="fn">Yossi</div><div class="ln">Sasi</div><div class="hb">יוסי סאסי</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('dorit')"><div class="fn">Dorit</div><div class="ln">Sasi</div><div class="hb">דורית סאסי</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <!-- Dudu group: Moran | Dudu | Daria -->
+    <div class="node" id="dudu_group">
+      <div style="display:flex;align-items:flex-start;gap:0;">
+
+        <!-- Moran + her children below -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="card sp" onclick="sd('moran')" id="moran_card"><div class="fn">Moran</div><div class="ln">Sasi</div><div class="hb">מורן סאסי</div></div>
+          <div class="vgap"></div>
+          <div style="display:flex;gap:5px;" id="g51m">
+            <div class="card g3" onclick="sd('liad')"><div class="fn">Liad</div><div class="ln">Sasi</div><div class="hb">ליעד סאסי</div></div>
+            <div class="card g3" onclick="sd('eilay')"><div class="fn">Eilay</div><div class="ln">Sasi</div><div class="hb">עילאי סאסי</div></div>
+          </div>
+        </div>
+
+        <div style="width:6px;flex-shrink:0;"></div>
+
+        <!-- Dudu — single card -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="card g2" onclick="sd('dudu')" id="dudu_card"><div class="fn">Dudu</div><div class="ln">Sasi</div><div class="hb">דודו סאסי</div><div class="ag">47</div></div>
+          <div class="vgap"></div>
+          <div class="g3spacer"></div>
+        </div>
+
+        <div style="width:6px;flex-shrink:0;"></div>
+
+        <!-- Daria + her children below -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="card sp" onclick="sd('daria')" id="daria_card"><div class="fn">Daria</div><div class="ln">Biton</div><div class="hb">דריה ביטון</div></div>
+          <div class="vgap"></div>
+          <div style="display:flex;gap:5px;" id="g51d">
+            <div class="card g3" onclick="sd('emma')"><div class="fn">Emma</div><div class="ln">Sasi</div><div class="hb">אמה סאסי</div></div>
+            <div class="card g3" onclick="sd('elle')"><div class="fn">Elle</div><div class="ln">Sasi</div><div class="hb">אל סאסי</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <!-- Ran + Kohavit -->
+    <div class="node" id="f52">
+      <div style="display:flex;align-items:flex-start;" id="f52c">
+        <div class="card g2" onclick="sd('ran')"><div class="fn">Ran</div><div class="ln">Sasi</div><div class="hb">רן סאסי</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('kohavit')"><div class="fn">Kohavit</div><div class="ln">Sasi</div><div class="hb">כוכבית סאסי</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g52">
+        <div class="card g3" onclick="sd('orel')"><div class="fn">Orel</div><div class="ln">Sasi</div><div class="hb">אוראל סאסי</div></div>
+        <div class="card g3" onclick="sd('libby')"><div class="fn">Libby</div><div class="ln">Sasi</div><div class="hb">ליבי סאסי</div></div>
+        <div class="card g3" onclick="sd('sol')"><div class="fn">Sol</div><div class="ln">Sasi</div><div class="hb">סוֹל סאסי</div></div>
+      </div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <!-- Ben + Rotem -->
+    <div class="node" id="f53">
+      <div style="display:flex;align-items:flex-start;" id="f53c">
+        <div class="card g2" onclick="sd('ben')"><div class="fn">Ben</div><div class="ln">Sasi</div><div class="hb">בן סאסי</div><div class="ag">37</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('rotem')"><div class="fn">Rotem</div><div class="ln">Sasi</div><div class="hb">רותם סאסי</div><div class="ag">38</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g53">
+        <div class="card g3" onclick="sd('dor')"><div class="fn">Dor</div><div class="ln">Sasi</div><div class="hb">דור סאסי</div><div class="ag">4</div></div>
+        <div class="card g3" onclick="sd('adi')"><div class="fn">Adi</div><div class="ln">Sasi</div><div class="hb">עדי סאסי</div><div class="ag">1</div></div>
+        <div class="card g3" onclick="sd('adar')"><div class="fn">Adar Yoseph</div><div class="ln">Sasi</div><div class="hb">אדר יוסף סאסי</div></div>
+      </div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <!-- Ariel + Noy -->
+    <div class="node" id="f54">
+      <div style="display:flex;align-items:flex-start;" id="f54c">
+        <div class="card g2" onclick="sd('ariel')"><div class="fn">Ariel</div><div class="ln">Sasi</div><div class="hb">אריאל סאסי</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('noy')"><div class="fn">Noy</div><div class="ln">Sasi</div><div class="hb">נוי סאסי</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g54">
+        <div class="card g3" onclick="sd('agam')"><div class="fn">Agam</div><div class="ln">Sasi</div><div class="hb">אגם סאסי</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B6: Malka & Itzhik Shmuel ══ -->
+<div class="node" id="b6">
+  <div style="display:flex;align-items:flex-start;" id="b6c">
+    <div class="card g1" onclick="sd('malka')"><div class="fn">Malka</div><div class="ln">Shmuel</div><div class="hb">מלכה שמואל</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('itzhik')"><div class="fn">Itzhik</div><div class="ln">Shmuel</div><div class="hb">איציק שמואל</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f61">
+      <div class="card g2" onclick="sd('shiran')"><div class="fn">Shiran</div><div class="ln">Shmuel</div><div class="hb">שירן שמואל</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f62">
+      <div class="card g2" onclick="sd('michal')"><div class="fn">Michal</div><div class="ln">Shmuel</div><div class="hb">מיכל שמואל</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B7: Avi & Orna ══
+     Noa + Amit: line from couple
+     Inbal: line from Orna only, placed on the right
+     Ilai + Itai: under Inbal
+══ -->
+<div class="node" id="b7">
+  <div style="display:flex;align-items:flex-start;" id="b7c">
+    <div class="card g1" onclick="sd('avi')" id="avi_card"><div class="fn">Avi</div><div class="ln">Sasi</div><div class="hb">אבי סאסי</div><div class="ag">68</div></div>
+    <div class="cdot c1"></div>
+    <div class="card g1" onclick="sd('orna')" id="orna_card"><div class="fn">Orna</div><div class="ln">Sasi</div><div class="hb">אורנה סאסי</div><div class="ag">67</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <!-- Noa — Avi & Orna -->
+    <div class="node" id="f71">
+      <div class="card g2" onclick="sd('noa')" id="noa_card"><div class="fn">Noa</div><div class="ln">Sasi</div><div class="hb">נועה סאסי</div><div class="ag">35</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <!-- Amit — Avi & Orna -->
+    <div class="node" id="f73">
+      <div class="card g2" onclick="sd('amit_7')" id="amit_card"><div class="fn">Amit</div><div class="ln">Sasi</div><div class="hb">עמית סאסי</div><div class="ag">33</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <!-- Inbal — Orna only, on the right -->
+    <div class="node" id="f72">
+      <div class="card g2" onclick="sd('inbal')" id="inbal_card"><div class="fn">Inbal</div><div class="ln"></div><div class="hb">ענבל</div><div class="ag">46</div></div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g72">
+        <div class="card g3" onclick="sd('ilai')"><div class="fn">Ilai</div><div class="hb">אילאי</div></div>
+        <div class="card g3" onclick="sd('itai')"><div class="fn">Itai</div><div class="hb">איתי</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B8: Liz & Robert Peck ══ -->
+<div class="node" id="b8">
+  <div style="display:flex;align-items:flex-start;" id="b8c">
+    <div class="card g1" onclick="sd('liz')"><div class="fn">Liz</div><div class="ln">Peck</div><div class="hb">ליז פק</div><div class="ag">67</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('robert')"><div class="fn">Robert</div><div class="ln">Peck</div><div class="hb">רוברט פק</div><div class="ag">66</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f81">
+      <div style="display:flex;align-items:flex-start;" id="f81c">
+        <div class="card g2" onclick="sd('ethan_p')"><div class="fn">Ethan</div><div class="ln">Peck</div><div class="hb">איתן פק</div><div class="ag">34</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('yuval_p')"><div class="fn">Yuval</div><div class="ln">Peck</div><div class="hb">יובל פק</div><div class="ag">28</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f82">
+      <div class="card g2" onclick="sd('jonathan')"><div class="fn">Jonathan</div><div class="ln">Peck</div><div class="hb">יונתן פק</div><div class="ag">32</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f83">
+      <div class="card g2" onclick="sd('zoey')"><div class="fn">Zoey</div><div class="ln">Peck</div><div class="hb">זואי פק</div><div class="ag">30</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B9: Amos & Anat ══ -->
+<div class="node" id="b9">
+  <div style="display:flex;align-items:flex-start;" id="b9c">
+    <div class="card g1" onclick="sd('amos')"><div class="fn">Amos</div><div class="ln">Sasi</div><div class="hb">עמוס סאסי</div><div class="ag">66</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('anat')"><div class="fn">Anat</div><div class="ln">Sasi</div><div class="hb">ענת סאסי</div><div class="ag">61</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f91">
+      <div style="display:flex;align-items:flex-start;" id="f91c">
+        <div class="card g2" onclick="sd('gili')"><div class="fn">Gili</div><div class="ln">Shamian</div><div class="hb">גילי שמיאן</div><div class="ag">28</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('amit_sh')"><div class="fn">Amit</div><div class="ln">Shamian</div><div class="hb">עמית שמיאן</div><div class="ag">29</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f92">
+      <div class="card g2" onclick="sd('guy_9')"><div class="fn">Guy</div><div class="ln">Sasi</div><div class="hb">גיא סאסי</div><div class="ag">25</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B10: Sari & Omri Cidor ══ -->
+<div class="node" id="b10">
+  <div style="display:flex;align-items:flex-start;" id="b10c">
+    <div class="card g1" onclick="sd('sari')"><div class="fn">Sari</div><div class="ln">Cidor</div><div class="hb">שרי סידור</div><div class="ag">64</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('omri')"><div class="fn">Omri</div><div class="ln">Cidor</div><div class="hb">עומרי סידור</div><div class="ag">67</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f101">
+      <div style="display:flex;align-items:flex-start;" id="f101c">
+        <div class="card g2" onclick="sd('dana')"><div class="fn">Dana</div><div class="ln">Cidor</div><div class="hb">דנה סידור</div><div class="ag">40</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('daniel')"><div class="fn">Daniel</div><div class="ln">Cidor</div><div class="hb">דניאל סידור</div><div class="ag">41</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g101">
+        <div class="card g3" onclick="sd('yuval_c')"><div class="fn">Yuval</div><div class="ln">Cidor</div><div class="hb">יובל סידור</div><div class="ag">5</div></div>
+      </div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f102">
+      <div style="display:flex;align-items:flex-start;" id="f102c">
+        <div class="card g2" onclick="sd('ido')"><div class="fn">Ido</div><div class="ln">Cidor</div><div class="hb">עידו סידור</div><div class="ag">39</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('lital')"><div class="fn">Lital</div><div class="ln">Cidor</div><div class="hb">ליטל סידור</div><div class="ag">40</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div style="display:flex;gap:5px;" id="g102">
+        <div class="card g3" onclick="sd('ethan_c')"><div class="fn">Ethan</div><div class="ln">Cidor</div><div class="hb">איתן סידור</div><div class="ag">7</div></div>
+        <div class="card g3" onclick="sd('ori_c')"><div class="fn">Ori</div><div class="ln">Cidor</div><div class="hb">אורי סידור</div><div class="ag">5</div></div>
+        <div class="card g3" onclick="sd('abigail')"><div class="fn">Abigail</div><div class="ln">Cidor</div><div class="hb">אביגיל סידור</div><div class="ag">1</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B11: Benny & Eti ══ -->
+<div class="node" id="b11">
+  <div style="display:flex;align-items:flex-start;" id="b11c">
+    <div class="card g1" onclick="sd('benny')"><div class="fn">Benny</div><div class="ln">Sasi</div><div class="hb">בני סאסי</div><div class="ag">63</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('eti_11')"><div class="fn">Eti</div><div class="ln">Sasi</div><div class="hb">אתי סאסי</div><div class="ag">62</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f111">
+      <div class="card g2" onclick="sd('danielle')"><div class="fn">Danielle</div><div class="ln">Sasi</div><div class="hb">דניאלה סאסי</div><div class="ag">37</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f112">
+      <div class="card g2" onclick="sd('lior')"><div class="fn">Lior</div><div class="ln">Sasi</div><div class="hb">ליאור סאסי</div><div class="ag">34</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f113">
+      <div class="card g2" onclick="sd('yoni')"><div class="fn">Yoni</div><div class="ln">Sasi</div><div class="hb">יוני סאסי</div><div class="ag">30</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+  </div>
+</div>
+<div class="bsep"></div>
+
+<!-- ══ B12: Tzvika & Merav ══ -->
+<div class="node" id="b12">
+  <div style="display:flex;align-items:flex-start;" id="b12c">
+    <div class="card g1" onclick="sd('tzvika')"><div class="fn">Tzvika</div><div class="ln">Sasi</div><div class="hb">צביקה סאסי</div><div class="ag">62</div></div>
+    <div class="cdot c1"></div>
+    <div class="card sp" onclick="sd('merav')"><div class="fn">Merav</div><div class="ln">Sasi</div><div class="hb">מירב סאסי</div><div class="ag">56</div></div>
+  </div>
+  <div class="vgap"></div>
+  <div style="display:flex;align-items:flex-start;">
+
+    <div class="node" id="f121">
+      <div style="display:flex;align-items:flex-start;" id="f121c">
+        <div class="card g2" onclick="sd('naama')"><div class="fn">Naama</div><div class="ln">Bornstein</div><div class="hb">נעמה בורנשטיין</div><div class="ag">29</div></div>
+        <div class="cdot c2"></div>
+        <div class="card sp" onclick="sd('itamar')"><div class="fn">Itamar</div><div class="ln">Bornstein</div><div class="hb">איתמר בורנשטיין</div><div class="ag">29</div></div>
+      </div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+    <div class="fsep"></div>
+
+    <div class="node" id="f122">
+      <div class="card g2" onclick="sd('tamar')"><div class="fn">Tamar</div><div class="ln">Sasi</div><div class="hb">תמר סאסי</div><div class="ag">26</div></div>
+      <div class="vgap"></div>
+      <div class="g3spacer"></div>
+    </div>
+
+  </div>
+</div>
+
+  </div><!-- end all branches -->
+</div><!-- end tree -->
+</div><!-- treewrap -->
+</div><!-- scroll -->
+
+<!-- Modal -->
+<div class="ov" id="ov" onclick="cib(event)">
+  <div class="dc">
+    <button class="dx" onclick="hd()">×</button>
+    <div class="dh">
+      <div class="dav" id="dav"></div>
+      <div><div class="dfn" id="dfn"></div><div class="dhb" id="dhb"></div></div>
+    </div>
+    <div class="dbg" id="dbg"></div>
+    <div class="dfs" id="dfs"></div>
+  </div>
+</div>
+
+<script>
+const P = {
+  shlomi:   {f:'Shlomi',  l:'Sasi',          h:'שלומי סאסי',     c:'g1', b:'July 2, 1946',     a:79,  ab:'#FFF0DC',ac:'#6B4F3A'},
+  yudit:    {f:'Yudit',   l:'Sasi',          h:'יהודית סאסי',    c:'sp',                               ab:'#F9F0F6',ac:'#9B5A85'},
+  yaron:    {f:'Yaron',   l:'Sasi',          h:'ירון סאסי',      c:'g2', ph:'+972-54-740-1030',         ab:'#EEF5E8',ac:'#4A6B35'},
+  hila_s:   {f:'Hila',   l:'Sasi',           h:'הילה סאסי',      c:'sp',                               ab:'#F9F0F6',ac:'#9B5A85'},
+  kfir:     {f:'Kfir',    l:'Sasi',          h:'כפיר סאסי',      c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  noam:     {f:'Noam',    l:'Sasi',          h:'נועם סאסי',      c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  guy_1:    {f:'Guy',     l:'Sasi',          h:'גיא סאסי',       c:'g2', b:'Nov 1974',   a:51, ph:'+972-54-833-9319', ab:'#EEF5E8',ac:'#4A6B35'},
+  yonit:    {f:'Yonit',   l:'Sasi',          h:'יונית סאסי',     c:'sp', b:'Feb 24, 1984', a:42, ph:'+972-54-455-5626', ab:'#F9F0F6',ac:'#9B5A85'},
+  lihi:     {f:'Lihi',    l:'Sasi',          h:'ליהי סאסי',      c:'g3', b:'June 4, 2009',  a:17, ab:'#EEF2FF',ac:'#3A5BB8'},
+  tahel:    {f:'Tahel',   l:'Sasi',          h:'תהל סאסי',       c:'g3', b:'July 29, 2010', a:15, ab:'#EEF2FF',ac:'#3A5BB8'},
+  harel:    {f:'Harel',   l:'Sasi',          h:'הראל סאסי',      c:'g3', b:'Sep 12, 2011',  a:14, ab:'#EEF2FF',ac:'#3A5BB8'},
+  alfonso:  {f:'Alfonso', l:'Sasi',          h:'אלפונסו סאסי',   c:'g1', b:'Nov 26, 1949', a:76, ph:'+972-50-527-5875', em:'alfonsosasy@gmail.com', ab:'#FFF0DC',ac:'#6B4F3A'},
+  eti_2:    {f:'Eti',     l:'Sasi',          h:'אתי סאסי',       c:'sp', b:'Nov 13, 1953', a:72, ph:'+972-50-990-0689', em:'etysasy@hotmail.com', ab:'#F9F0F6',ac:'#9B5A85'},
+  hanit:    {f:'Hanit',   l:'Ben Bassat',    h:'חנית בן בסט',    c:'g2', b:'Oct 23, 1973', a:52, ph:'+1(407)927-9759', em:'hanit@me.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  tzachi:   {f:'Tzachi',  l:'Ben Bassat',    h:'צחי בן בסט',     c:'sp', b:'Jan 22, 1972', a:54, ph:'+1(407)927-9758', ab:'#F9F0F6',ac:'#9B5A85'},
+  ron:      {f:'Ron',     l:'Ben Bassat',    h:'רון בן בסט',     c:'g3', b:'Feb 17, 2003', a:23, ab:'#EEF2FF',ac:'#3A5BB8'},
+  aiden:    {f:'Aiden',   l:'Ben Bassat',    h:'עדן בן בסט',     c:'g3', b:'Mar 5, 2005',  a:21, ab:'#EEF2FF',ac:'#3A5BB8'},
+  mia:      {f:'Mia',     l:'Ben Bassat',    h:'מיה בן בסט',     c:'g3', b:'Oct 13, 2009', a:16, ab:'#EEF2FF',ac:'#3A5BB8'},
+  yifat:    {f:'Yifat',   l:'Sasi',          h:'יפעת סאסי',      c:'g2', b:'July 8, 1976', a:49, ph:'+972-50-744-2805', em:'yifatsasi00@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  eilon:    {f:'Eilon',   l:'Sasi',          h:'אילון סאסי',     c:'g2', b:'Aug 12, 1977', a:48, ph:'+972-50-666-6747', em:'eilonsasi@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  lily:     {f:'Lily',    l:'Sasi',          h:'לילי סאסי',      c:'sp', b:'Jan 28, 1978', a:48, ph:'+972-50-666-6737', em:'lilysasi1@gmail.com', ab:'#F9F0F6',ac:'#9B5A85'},
+  ori_s:    {f:'Ori',     l:'Sasi',          h:'אורי סאסי',      c:'g3', b:'Dec 23, 2004', a:21, ph:'+972-52-330-3330', em:'orisasi1990@gmail.com', ab:'#EEF2FF',ac:'#3A5BB8'},
+  zohar:    {f:'Zohar',   l:'Sasi',          h:'זוהר סאסי',      c:'g3', b:'Oct 10, 2007', a:18, ph:'+972-54-833-3192', em:'sasizohar10@gmail.com', ab:'#EEF2FF',ac:'#3A5BB8'},
+  oshri:    {f:'Oshri',   l:'Sasi',          h:'אושרי סאסי',     c:'g3', b:'May 15, 2011', a:15, ph:'+972-50-666-1911', em:'oshrisasi@gmail.com', ab:'#EEF2FF',ac:'#3A5BB8'},
+  talia:    {f:'Talia',   l:'Sasi',          h:'טליה סאסי',      c:'g3', b:'Dec 20, 2014', a:11, ph:'+972-52-229-6795', em:'talyasasi14@gmail.com', ab:'#EEF2FF',ac:'#3A5BB8'},
+  nissim:   {f:'Nissim',  l:'Sasi',          h:'נסים סאסי',      c:'g1', b:'Apr 28, 1951', a:75, ph:'+972-50-523-9054', em:'sassinissim@gmail.com', ab:'#FFF0DC',ac:'#6B4F3A'},
+  eti_3:    {f:'Eti',     l:'Sasi',          h:'אתי סאסי',       c:'sp',                               ab:'#F9F0F6',ac:'#9B5A85'},
+  dan:      {f:'Dan',     l:'Sasi',          h:'דן סאסי',        c:'g2', b:'Dec 11, 1994', a:31, ph:'+972-50-881-7906', ab:'#EEF5E8',ac:'#4A6B35'},
+  tal:      {f:'Tal',     l:'Sasi',          h:'טל סאסי',        c:'g2', b:'Dec 11, 1994', a:31, ph:'+972-50-571-1976', ab:'#EEF5E8',ac:'#4A6B35'},
+  amit_n:   {f:'Amit',    l:'Sasi',          h:'עמית סאסי',      c:'sp', b:'Oct 17, 1996', a:29, ab:'#F9F0F6',ac:'#9B5A85'},
+  gali:     {f:'Gali',    l:'Boaron',        h:'גלי בוארון',     c:'g1', b:'Apr 3, 1953',  a:73, ph:'+972-52-597-6515', em:'galiboaron@gmail.com', ab:'#FFF0DC',ac:'#6B4F3A'},
+  berto:    {f:'Berto',   l:'Boaron',        h:'ברטו בוארון',    c:'sp', b:'Dec 8, 1947',  a:78, ab:'#F9F0F6',ac:'#9B5A85'},
+  limor:    {f:'Limor',   l:'Amira',         h:'לימור אמירה',    c:'g2', b:'Jan 7, 1976',  a:50, ph:'+972-54-817-4477', em:'limortripo@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  dudik:    {f:'Dudik',   l:'Amira',         h:'דודיק אמירה',    c:'sp', b:'Jan 15, 1981', a:45, ph:'+972-52-520-884', em:'dudikamira@gmail.com', ab:'#F9F0F6',ac:'#9B5A85'},
+  avia:     {f:'Avia',    l:'Amira',         h:'אביה אמירה',     c:'g3', b:'Nov 21, 2014', a:11, ab:'#EEF2FF',ac:'#3A5BB8'},
+  hilel:    {f:'Hilel',   l:'Amira',         h:'הלל אמירה',      c:'g3', b:'Nov 27, 2015', a:10, ab:'#EEF2FF',ac:'#3A5BB8'},
+  nevo:     {f:'Nevo',    l:'Amira',         h:'נבו אמירה',      c:'g3', b:'July 13, 2017',a:8,  ab:'#EEF2FF',ac:'#3A5BB8'},
+  imri:     {f:'Imri',    l:'Amira',         h:'אמרי אמירה',     c:'g3', b:'July 13, 2017',a:8,  ab:'#EEF2FF',ac:'#3A5BB8'},
+  hanit_b:  {f:'Hanit',   l:'Boaron',        h:'חנית בוארון',    c:'g2', b:'Sep 20, 1978', a:47, ph:'+972-54-635-4701', em:'hanaleb@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  hila_b:   {f:'Hila',    l:'Boaron',        h:'הילה בוארון',    c:'g2', b:'Feb 17, 1982', a:44, ph:'+972-52-536-2533', em:'hillaboaron@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  yossi:    {f:'Yossi',   l:'Sasi',          h:'יוסי סאסי',      c:'g1', ph:'+972-54-566-6331', em:'sadr1@barak.net.il', ab:'#FFF0DC',ac:'#6B4F3A'},
+  dorit:    {f:'Dorit',   l:'Sasi',          h:'דורית סאסי',     c:'sp',                               ab:'#F9F0F6',ac:'#9B5A85'},
+  dudu:     {f:'Dudu',    l:'Sasi',          h:'דודו סאסי',      c:'g2', b:'Aug 15, 1978', a:47, ph:'+972-54-566-6336', em:'dudusasi@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  moran:    {f:'Moran',   l:'Sasi',          h:'מורן סאסי',      c:'sp',                               ab:'#F9F0F6',ac:'#9B5A85'},
+  daria:    {f:'Daria',   l:'Biton',         h:'דריה ביטון',     c:'sp',                               ab:'#F9F0F6',ac:'#9B5A85'},
+  liad:     {f:'Liad',    l:'Sasi',          h:'ליעד סאסי',      c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  eilay:    {f:'Eilay',   l:'Sasi',          h:'עילאי סאסי',     c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  emma:     {f:'Emma',    l:'Sasi',          h:'אמה סאסי',       c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  elle:     {f:'Elle',    l:'Sasi',          h:'אל סאסי',        c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  ran:      {f:'Ran',     l:'Sasi',          h:'רן סאסי',        c:'g2', ph:'+972-54-566-6345', em:'sasiran@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  kohavit:  {f:'Kohavit', l:'Sasi',          h:'כוכבית סאסי',    c:'sp',                               ab:'#F9F0F6',ac:'#9B5A85'},
+  orel:     {f:'Orel',    l:'Sasi',          h:'אוראל סאסי',     c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  libby:    {f:'Libby',   l:'Sasi',          h:'ליבי סאסי',      c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  sol:      {f:'Sol',     l:'Sasi',          h:'סוֹל סאסי',      c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  ben:      {f:'Ben',     l:'Sasi',          h:'בן סאסי',        c:'g2', b:'July 17, 1988', a:37, ph:'+972-54-566-6337', em:'bensasi177@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  rotem:    {f:'Rotem',   l:'Sasi',          h:'רותם סאסי',      c:'sp', b:'Feb 14, 1988',  a:38, ab:'#F9F0F6',ac:'#9B5A85'},
+  dor:      {f:'Dor',     l:'Sasi',          h:'דור סאסי',       c:'g3', b:'Feb 15, 2022',  a:4,  ab:'#EEF2FF',ac:'#3A5BB8'},
+  adi:      {f:'Adi',     l:'Sasi',          h:'עדי סאסי',       c:'g3', b:'June 19, 2024', a:1,  ab:'#EEF2FF',ac:'#3A5BB8'},
+  adar:     {f:'Adar Yoseph',l:'Sasi',       h:'אדר יוסף סאסי',  c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  ariel:    {f:'Ariel',   l:'Sasi',          h:'אריאל סאסי',     c:'g2', em:'arielsasi007@gmail.com',   ab:'#EEF5E8',ac:'#4A6B35'},
+  noy:      {f:'Noy',     l:'Sasi',          h:'נוי סאסי',       c:'sp',                               ab:'#F9F0F6',ac:'#9B5A85'},
+  agam:     {f:'Agam',    l:'Sasi',          h:'אגם סאסי',       c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  malka:    {f:'Malka',   l:'Shmuel',        h:'מלכה שמואל',     c:'g1', ph:'+972-50-893-0638',         ab:'#FFF0DC',ac:'#6B4F3A'},
+  itzhik:   {f:'Itzhik',  l:'Shmuel',        h:'איציק שמואל',    c:'sp',                               ab:'#F9F0F6',ac:'#9B5A85'},
+  shiran:   {f:'Shiran',  l:'Shmuel',        h:'שירן שמואל',     c:'g2',                               ab:'#EEF5E8',ac:'#4A6B35'},
+  michal:   {f:'Michal',  l:'Shmuel',        h:'מיכל שמואל',     c:'g2', ph:'+972-50-893-0684', em:'michalshmuel19@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  avi:      {f:'Avi',     l:'Sasi',          h:'אבי סאסי',       c:'g1', b:'Aug 20, 1957',  a:68, ph:'+972-50-523-3893', em:'sasiavi1@walla.com', ab:'#FFF0DC',ac:'#6B4F3A'},
+  orna:     {f:'Orna',    l:'Sasi',          h:'אורנה סאסי',     c:'g1', b:'Apr 6, 1959',   a:67, ab:'#FFF0DC',ac:'#6B4F3A'},
+  noa:      {f:'Noa',     l:'Sasi',          h:'נועה סאסי',      c:'g2', b:'July 16, 1990', a:35, ph:'+972-50-821-0399', ab:'#EEF5E8',ac:'#4A6B35'},
+  inbal:    {f:'Inbal',   l:'',              h:'ענבל',           c:'g2', b:'Nov 6, 1979',   a:46, ph:'+972-50-797-3022', em:'sinbal2@walla.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  ilai:     {f:'Ilai',    l:'',              h:'אילאי',          c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  itai:     {f:'Itai',    l:'',              h:'איתי',           c:'g3',                               ab:'#EEF2FF',ac:'#3A5BB8'},
+  amit_7:   {f:'Amit',    l:'Sasi',          h:'עמית סאסי',      c:'g2', b:'Oct 3, 1992',   a:33, ph:'+972-50-821-0398', ab:'#EEF5E8',ac:'#4A6B35'},
+  liz:      {f:'Liz',     l:'Peck',          h:'ליז פק',         c:'g1', b:'Dec 5, 1958',   a:67, ph:'+1(516)650-4495', em:'sassylizp@aol.com', ab:'#FFF0DC',ac:'#6B4F3A'},
+  robert:   {f:'Robert',  l:'Peck',          h:'רוברט פק',       c:'sp', b:'Nov 28, 1959',  a:66, ph:'+1(917)596-0825', em:'robertp@legacywps.com', ab:'#F9F0F6',ac:'#9B5A85'},
+  ethan_p:  {f:'Ethan',   l:'Peck',          h:'איתן פק',        c:'g2', b:'July 15, 1991', a:34, ph:'+1(516)993-3211', em:'ebpeck91@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  yuval_p:  {f:'Yuval',   l:'Peck',          h:'יובל פק',        c:'sp', b:'Jan 4, 1998',   a:28, ph:'+972-50-909-1709', em:'yuvalgphotography@gmail.com', ab:'#F9F0F6',ac:'#9B5A85'},
+  jonathan: {f:'Jonathan',l:'Peck',          h:'יונתן פק',       c:'g2', b:'Feb 19, 1994',  a:32, ph:'+972-54-979-5673', em:'jpeck219@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  zoey:     {f:'Zoey',    l:'Peck',          h:'זואי פק',        c:'g2', b:'Apr 17, 1996',  a:30, ph:'+1(516)993-8680', em:'zoeypeck@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  amos:     {f:'Amos',    l:'Sasi',          h:'עמוס סאסי',      c:'g1', b:'Apr 25, 1960',  a:66, ph:'+972-50-523-2886', em:'amossasi@gmail.com', ab:'#FFF0DC',ac:'#6B4F3A'},
+  anat:     {f:'Anat',    l:'Sasi',          h:'ענת סאסי',       c:'sp', b:'Jan 8, 1965',   a:61, ph:'+972-505758407', ab:'#F9F0F6',ac:'#9B5A85'},
+  gili:     {f:'Gili',    l:'Shamian',       h:'גילי שמיאן',     c:'g2', b:'Dec 27, 1997',  a:28, ph:'+972-50-2155113', em:'gilisava1@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  amit_sh:  {f:'Amit',    l:'Shamian',       h:'עמית שמיאן',     c:'sp', b:'Nov 8, 1996',   a:29, ab:'#F9F0F6',ac:'#9B5A85'},
+  guy_9:    {f:'Guy',     l:'Sasi',          h:'גיא סאסי',       c:'g2', b:'Sep 10, 2000',  a:25, ab:'#EEF5E8',ac:'#4A6B35'},
+  sari:     {f:'Sari',    l:'Cidor',         h:'שרי סידור',      c:'g1', b:'July 14, 1961', a:64, ph:'+972-50-525-4929', em:'saricidor@gmail.com', ab:'#FFF0DC',ac:'#6B4F3A'},
+  omri:     {f:'Omri',    l:'Cidor',         h:'עומרי סידור',    c:'sp', b:'June 13, 1959', a:67, ph:'+972-52-208-2032', em:'omri.c2005@gmail.com', ab:'#F9F0F6',ac:'#9B5A85'},
+  dana:     {f:'Dana',    l:'Cidor',         h:'דנה סידור',      c:'g2', b:'Sep 11, 1985',  a:40, ph:'+972-54-769-0317', em:'danacidor@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  daniel:   {f:'Daniel',  l:'Cidor',         h:'דניאל סידור',    c:'sp', b:'June 11, 1985', a:41, ab:'#F9F0F6',ac:'#9B5A85'},
+  yuval_c:  {f:'Yuval',   l:'Cidor',         h:'יובל סידור',     c:'g3', b:'Dec 12, 2020',  a:5,  ab:'#EEF2FF',ac:'#3A5BB8'},
+  ido:      {f:'Ido',     l:'Cidor',         h:'עידו סידור',     c:'g2', b:'Mar 4, 1987',   a:39, ph:'+972-54-584-7588', em:'idocidor@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  lital:    {f:'Lital',   l:'Cidor',         h:'ליטל סידור',     c:'sp', b:'May 20, 1986',  a:40, ab:'#F9F0F6',ac:'#9B5A85'},
+  ethan_c:  {f:'Ethan',   l:'Cidor',         h:'איתן סידור',     c:'g3', b:'June 20, 2018', a:7,  ab:'#EEF2FF',ac:'#3A5BB8'},
+  ori_c:    {f:'Ori',     l:'Cidor',         h:'אורי סידור',     c:'g3', b:'Dec 31, 2020',  a:5,  ab:'#EEF2FF',ac:'#3A5BB8'},
+  abigail:  {f:'Abigail', l:'Cidor',         h:'אביגיל סידור',   c:'g3', b:'Jan 31, 2025',  a:1,  ab:'#EEF2FF',ac:'#3A5BB8'},
+  benny:    {f:'Benny',   l:'Sasi',          h:'בני סאסי',       c:'g1', b:'Sep 3, 1962',   a:63, ph:'+972-50-943-3367', em:'sasibe@012.net.il', ab:'#FFF0DC',ac:'#6B4F3A'},
+  eti_11:   {f:'Eti',     l:'Sasi',          h:'אתי סאסי',       c:'sp', b:'Jan 24, 1964',  a:62, ph:'+972-50-628-2757', ab:'#F9F0F6',ac:'#9B5A85'},
+  danielle: {f:'Danielle',l:'Sasi',          h:'דניאלה סאסי',    c:'g2', b:'Oct 17, 1988',  a:37, ph:'+972-50-533-3132', em:'dnlssdnl@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  lior:     {f:'Lior',    l:'Sasi',          h:'ליאור סאסי',     c:'g2', b:'Aug 25, 1991',  a:34, ph:'+972-50-900-7949', em:'liorsassy@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  yoni:     {f:'Yoni',    l:'Sasi',          h:'יוני סאסי',      c:'g2', b:'Mar 14, 1996',  a:30, ph:'+972-50-733-3138', em:'yonatansassy129@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  tzvika:   {f:'Tzvika',  l:'Sasi',          h:'צביקה סאסי',     c:'g1', b:'Jan 11, 1964',  a:62, ph:'+972-50-521-3312', em:'tzvisasi@gmail.com', ab:'#FFF0DC',ac:'#6B4F3A'},
+  merav:    {f:'Merav',   l:'Sasi',          h:'מירב סאסי',      c:'sp', b:'Sep 22, 1969',  a:56, ph:'+972-50-523-7188', em:'Meravisasi@gmail.com', ab:'#F9F0F6',ac:'#9B5A85'},
+  naama:    {f:'Naama',   l:'Bornstein',     h:'נעמה בורנשטיין',  c:'g2', b:'Sep 17, 1996',  a:29, ph:'+972-505758401', em:'Naamasasi@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+  itamar:   {f:'Itamar',  l:'Bornstein',     h:'איתמר בורנשטיין', c:'sp', b:'Nov 26, 1996',  a:29, ph:'+972-54-659-4566', em:'Itamarb01@gmail.com', ab:'#F9F0F6',ac:'#9B5A85'},
+  tamar:    {f:'Tamar',   l:'Sasi',          h:'תמר סאסי',       c:'g2', b:'Sep 19, 1999',  a:26, ph:'+972-50-201-0303', em:'tamarsasi@gmail.com', ab:'#EEF5E8',ac:'#4A6B35'},
+};
+
+function ini(f,l){return((f||'')[0]||'?').toUpperCase()+(((l||'')[0])||'').toUpperCase();}
+function sd(id){
+  const p=P[id]; if(!p) return;
+  const av=document.getElementById('dav');
+  av.style.background=p.ab||'#F0E8D8'; av.style.color=p.ac||'#6B4F3A';
+  av.textContent=ini(p.f,p.l);
+  document.getElementById('dfn').textContent=p.f+(p.l?' '+p.l:'');
+  document.getElementById('dhb').textContent=p.h||'';
+  const b=document.getElementById('dbg');
+  const gl=p.c==='g1'?'1st generation':p.c==='g2'?'2nd generation':p.c==='g3'?'3rd generation':'Spouse / partner';
+  b.textContent=gl;
+  b.style.cssText=p.c==='sp'?'background:#FEF0F9;color:#882266':
+    p.c==='g1'?'background:#FFF5E6;color:#6B4F3A':
+    p.c==='g2'?'background:#F0F6EC;color:#3B6020':'background:#EEF2FF;color:#2A4A9A';
+  const fs=[];
+  if(p.b)  fs.push(['Born',p.b]);
+  if(p.a)  fs.push(['Age', p.a+' yrs']);
+  if(p.ph) fs.push(['Phone','<a href="tel:'+p.ph+'">'+p.ph+'</a>']);
+  if(p.em) fs.push(['Email','<a href="mailto:'+p.em+'">'+p.em+'</a>']);
+  if(!fs.length) fs.push(['Note','No contact info on file']);
+  document.getElementById('dfs').innerHTML=fs.map(([l,v],i)=>
+    (i?'<div class="dd"></div>':'')+
+    `<div class="dr"><div class="dl">${l}</div><div class="dv">${v}</div></div>`
+  ).join('');
+  document.getElementById('ov').classList.add('open');
+}
+function hd(){document.getElementById('ov').classList.remove('open');}
+function cib(e){if(e.target===document.getElementById('ov'))hd();}
+
+function drawLines(){
+  const wrap=document.getElementById('treewrap');
+  const svg=document.getElementById('svg');
+  const wr=wrap.getBoundingClientRect();
+  svg.setAttribute('width',wrap.offsetWidth);
+  svg.setAttribute('height',wrap.offsetHeight);
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  function m(el){
+    if(!el) return null;
+    const r=el.getBoundingClientRect();
+    return{cx:r.left-wr.left+r.width/2, top:r.top-wr.top, bot:r.bottom-wr.top,
+           left:r.left-wr.left, right:r.right-wr.left};
+  }
+  function line(x1,y1,x2,y2,col,sw){
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',x1);l.setAttribute('y1',y1);
+    l.setAttribute('x2',x2);l.setAttribute('y2',y2);
+    l.setAttribute('stroke',col||'#C4A882');
+    l.setAttribute('stroke-width',sw||1.5);
+    l.setAttribute('stroke-linecap','round');
+    l.setAttribute('opacity','0.65');
+    svg.appendChild(l);
+  }
+  function connect(par,kids,col,sw){
+    if(!par) return;
+    kids=kids.filter(Boolean);
+    if(!kids.length) return;
+    const p=m(par); if(!p) return;
+    const cs=kids.map(k=>m(k)).filter(Boolean);
+    if(!cs.length) return;
+    const minTop=Math.min(...cs.map(c=>c.top));
+    const midY=p.bot+(minTop-p.bot)*0.5;
+    line(p.cx,p.bot,p.cx,midY,col,sw);
+    if(cs.length===1){
+      line(p.cx,midY,cs[0].cx,midY,col,sw);
+      line(cs[0].cx,midY,cs[0].cx,cs[0].top,col,sw);
+    } else {
+      line(Math.min(...cs.map(c=>c.cx)),midY,Math.max(...cs.map(c=>c.cx)),midY,col,sw);
+      cs.forEach(c=>line(c.cx,midY,c.cx,c.top,col,sw));
+    }
+  }
+
+  const G1='#C4A882', G2='#B89A70', G3='#7A90B8';
+  const g=id=>document.getElementById(id);
+
+  // Root → all 12 gen1 couples
+  connect(g('rc'),[g('b1c'),g('b2c'),g('b3c'),g('b4c'),g('b5c'),g('b6c'),g('b7c'),g('b8c'),g('b9c'),g('b10c'),g('b11c'),g('b12c')],G1,1.5);
+
+  // B1 Shlomi → Yaron, Guy; their kids
+  connect(g('b1c'),[g('f11c'),g('f12c')],G2,1.3);
+  connect(g('f11c'),[g('g11')],G3,1.2);
+  connect(g('f12c'),[g('g12')],G3,1.2);
+
+  // B2 Alfonso → Hanit, Yifat, Eilon; their kids
+  connect(g('b2c'),[g('f21c'),g('f22'),g('f23c')],G2,1.3);
+  connect(g('f21c'),[g('g21')],G3,1.2);
+  connect(g('f23c'),[g('g23')],G3,1.2);
+
+  // B3 Nissim → Dan, Tal
+  connect(g('b3c'),[g('f31'),g('f32c')],G2,1.3);
+
+  // B4 Gali → Limor, Hanit B, Hila B; Limor's kids
+  connect(g('b4c'),[g('f41c'),g('f42'),g('f43')],G2,1.3);
+  connect(g('f41c'),[g('g41')],G3,1.2);
+
+  // B5 Yossi → dudu_group, Ran, Ben, Ariel
+  connect(g('b5c'),[g('dudu_group'),g('f52'),g('f53'),g('f54')],G2,1.3);
+  // Dudu ↔ Moran: horizontal line, drop to Liad+Eilay
+  const dudu=m(g('dudu_card')), moran=m(g('moran_card')), daria=m(g('daria_card'));
+  const g51m=m(g('g51m')), g51d=m(g('g51d'));
+  if(dudu&&moran){
+    const lY=dudu.top+Math.round((dudu.bot-dudu.top)*0.45);
+    line(moran.right,lY,dudu.left,lY,G2,1.3);
+    if(g51m){const mx=(moran.right+dudu.left)/2,my=lY+(g51m.top-lY)*0.5;line(mx,lY,mx,my,G3,1.2);line(mx,my,g51m.cx,my,G3,1.2);line(g51m.cx,my,g51m.cx,g51m.top,G3,1.2);}
+  }
+  if(dudu&&daria){
+    const lY=dudu.top+Math.round((dudu.bot-dudu.top)*0.45);
+    line(dudu.right,lY,daria.left,lY,G2,1.3);
+    if(g51d){const mx=(dudu.right+daria.left)/2,my=lY+(g51d.top-lY)*0.5;line(mx,lY,mx,my,G3,1.2);line(mx,my,g51d.cx,my,G3,1.2);line(g51d.cx,my,g51d.cx,g51d.top,G3,1.2);}
+  }
+  connect(g('f52c'),[g('g52')],G3,1.2);
+  connect(g('f53c'),[g('g53')],G3,1.2);
+  connect(g('f54c'),[g('g54')],G3,1.2);
+
+  // B6 Malka → Shiran, Michal
+  connect(g('b6c'),[g('f61'),g('f62')],G2,1.3);
+
+  // B7 Avi & Orna → Noa, Amit (from couple)
+  connect(g('b7c'),[g('noa_card'),g('amit_card')],G2,1.3);
+  // Orna only → Inbal (same style, from Orna card)
+  connect(g('orna_card'),[g('inbal_card')],G2,1.3);
+  // Inbal → Ilai, Itai
+  connect(g('inbal_card'),[g('g72')],G3,1.2);
+
+  // B8 Liz → Ethan, Jonathan, Zoey
+  connect(g('b8c'),[g('f81c'),g('f82'),g('f83')],G2,1.3);
+
+  // B9 Amos → Gili, Guy
+  connect(g('b9c'),[g('f91c'),g('f92')],G2,1.3);
+
+  // B10 Sari → Dana, Ido; their kids
+  connect(g('b10c'),[g('f101c'),g('f102c')],G2,1.3);
+  connect(g('f101c'),[g('g101')],G3,1.2);
+  connect(g('f102c'),[g('g102')],G3,1.2);
+
+  // B11 Benny → Danielle, Lior, Yoni
+  connect(g('b11c'),[g('f111'),g('f112'),g('f113')],G2,1.3);
+
+  // B12 Tzvika → Naama, Tamar
+  connect(g('b12c'),[g('f121c'),g('f122')],G2,1.3);
+}
+
+window.addEventListener('load',()=>setTimeout(drawLines,200));
+window.addEventListener('resize',drawLines);
+</script>
+
+<script>
+if(sessionStorage.getItem('sasi_auth')!=='1'){
+  window.location.href='index.html';
+} else {
+  document.getElementById('sitecontents').style.display='block';
+}
+</script>
+</div><!-- end sitecontents -->
+</body>
+</html>
