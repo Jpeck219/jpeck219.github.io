@@ -7,15 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 
-/* SITE NAV */
 #sitenav{background:#2E2A20;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;position:sticky;top:0;z-index:100;}
 .nav-brand{font-family:'Playfair Display',serif;color:#E8DCC8;font-size:1.25rem;letter-spacing:.08em;text-decoration:none;}
 .nav-links{display:flex;gap:2rem;list-style:none;}
 .nav-links a{color:#E8DCC8;text-decoration:none;font-size:.88rem;letter-spacing:.1em;text-transform:uppercase;opacity:.8;transition:opacity .2s;}
 .nav-links a:hover{opacity:1;}
 .nav-links a.active{opacity:1;border-bottom:1px solid #C4714A;padding-bottom:2px;}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;}
+.nav-hamburger span{display:block;width:24px;height:2px;background:#E8DCC8;border-radius:2px;}
+.nav-mobile{display:none;position:absolute;top:60px;left:0;right:0;background:#2E2A20;border-top:1px solid rgba(255,255,255,0.08);z-index:99;flex-direction:column;}
+.nav-mobile.open{display:flex;}
+.nav-mobile a{color:#E8DCC8;text-decoration:none;font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;opacity:.85;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);transition:opacity .2s,background .2s;}
+.nav-mobile a:hover{opacity:1;background:rgba(255,255,255,0.05);}
+.nav-mobile a:last-child{border-bottom:none;}
 /* hide site until auth */
 #sitecontents{display:none;}
+@media(max-width:768px){
+  #sitenav{padding:0 1.25rem;position:relative;}
+  .nav-links{display:none;}
+  .nav-hamburger{display:flex;}
+}
 
 :root{
   --sand:#F5EFE6;--sand2:#E8DDD0;
@@ -99,7 +110,17 @@ html,body{background:var(--sand);font-family:'Inter',sans-serif;color:var(--ink)
     <li><a href="events.html">Events</a></li>
     <li><a href="family-tree.html" class="active">Family Tree</a></li>
   </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="index.html" onclick="closeMenu()">Home</a>
+  <a href="yearbook.html" onclick="closeMenu()">The Family</a>
+  <a href="gallery.html" onclick="closeMenu()">Gallery</a>
+  <a href="events.html" onclick="closeMenu()">Events</a>
+  <a href="family-tree.html" onclick="closeMenu()">Family Tree</a>
+</div>
 
 <div class="hdr">
   <div>
@@ -950,6 +971,20 @@ if(sessionStorage.getItem('sasi_auth')!=='1'){
 } else {
   document.getElementById('sitecontents').style.display='block';
 }
+
+function toggleMenu(){
+  document.getElementById('nav-mobile').classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('nav-mobile').classList.remove('open');
+}
+document.addEventListener('click',function(e){
+  const hamburger=document.getElementById('hamburger');
+  const mobileNav=document.getElementById('nav-mobile');
+  if(mobileNav&&hamburger&&!hamburger.contains(e.target)&&!mobileNav.contains(e.target)){
+    mobileNav.classList.remove('open');
+  }
+});
 </script>
 </div><!-- end sitecontents -->
 </body>
