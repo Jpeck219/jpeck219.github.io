@@ -36,16 +36,19 @@
       justify-content: center;
       z-index: 1000;
       gap: 1.2rem;
+      padding: 2rem;
     }
     #gate h1 {
       font-family: 'Playfair Display', serif;
       font-size: 2rem;
       color: var(--ink);
       letter-spacing: 0.04em;
+      text-align: center;
     }
     #gate p {
       color: var(--muted);
       font-size: 0.95rem;
+      text-align: center;
     }
     #gate input {
       padding: 0.65rem 1.2rem;
@@ -112,6 +115,69 @@
       transition: opacity 0.2s;
     }
     .nav-links a:hover { opacity: 1; }
+
+    /* HAMBURGER — hidden on desktop */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--sand);
+      border-radius: 2px;
+    }
+
+    /* MOBILE DROPDOWN */
+    .nav-mobile {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: var(--ink);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      z-index: 99;
+      flex-direction: column;
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a {
+      color: var(--sand);
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: opacity 0.2s, background 0.2s;
+    }
+    .nav-mobile a:hover { opacity: 1; background: rgba(255,255,255,0.05); }
+    .nav-mobile a:last-child { border-bottom: none; }
+
+    /* MOBILE BREAKPOINT */
+    @media (max-width: 768px) {
+      nav { padding: 0 1.25rem; position: relative; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+
+      .hero { padding: 3rem 1.25rem 2.5rem; }
+      .hero-images img { width: 140px; height: 100px; }
+
+      .about { margin: 2.5rem auto; padding: 0 1.25rem; }
+      .about h2 { font-size: 1.5rem; }
+
+      .features { padding: 0 1.25rem; margin-bottom: 3rem; }
+
+      #gate h1 { font-size: 1.5rem; }
+      #gate input { width: 100%; max-width: 280px; }
+    }
 
     /* HERO */
     .hero {
@@ -281,6 +347,7 @@
 
     <nav>
       <a class="nav-brand" href="index.html">Sasi Family</a>
+      <!-- Desktop links -->
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="yearbook.html">The Family</a></li>
@@ -288,7 +355,20 @@
         <li><a href="events.html">Events</a></li>
         <li><a href="family-tree.html">Family Tree</a></li>
       </ul>
+      <!-- Hamburger button (mobile only) -->
+      <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
     </nav>
+
+    <!-- Mobile dropdown -->
+    <div class="nav-mobile" id="nav-mobile">
+      <a href="index.html" onclick="closeMenu()">Home</a>
+      <a href="yearbook.html" onclick="closeMenu()">The Family</a>
+      <a href="gallery.html" onclick="closeMenu()">Gallery</a>
+      <a href="events.html" onclick="closeMenu()">Events</a>
+      <a href="family-tree.html" onclick="closeMenu()">Family Tree</a>
+    </div>
 
     <section class="hero">
       <div class="hero-content">
@@ -356,6 +436,21 @@
       document.getElementById('gate').style.display = 'none';
       document.getElementById('site').style.display = 'block';
     }
+
+    function toggleMenu() {
+      document.getElementById('nav-mobile').classList.toggle('open');
+    }
+    function closeMenu() {
+      document.getElementById('nav-mobile').classList.remove('open');
+    }
+    // Close menu if user taps outside
+    document.addEventListener('click', function(e) {
+      const hamburger = document.getElementById('hamburger');
+      const mobileNav = document.getElementById('nav-mobile');
+      if (mobileNav && hamburger && !hamburger.contains(e.target) && !mobileNav.contains(e.target)) {
+        mobileNav.classList.remove('open');
+      }
+    });
   </script>
 
 </body>
