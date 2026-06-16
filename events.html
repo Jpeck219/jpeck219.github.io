@@ -29,7 +29,18 @@
     .nav-links a:hover { opacity: 1; }
     .nav-links a.active { opacity: 1; border-bottom: 1px solid var(--terracotta); padding-bottom: 2px; }
 
-    /* LAYOUT */
+    /* HAMBURGER */
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: var(--sand); border-radius: 2px; }
+
+    /* MOBILE DROPDOWN */
+    .nav-mobile { display: none; position: absolute; top: 60px; left: 0; right: 0; background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08); z-index: 99; flex-direction: column; }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { color: var(--sand); text-decoration: none; font-size: .9rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; padding: 1rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.06); transition: opacity .2s, background .2s; }
+    .nav-mobile a:hover { opacity: 1; background: rgba(255,255,255,0.05); }
+    .nav-mobile a:last-child { border-bottom: none; }
+
+    /* DESKTOP LAYOUT */
     .page { display: flex; gap: 0; height: calc(100vh - 60px); overflow: hidden; }
 
     /* CALENDAR SIDE */
@@ -42,11 +53,11 @@
 
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--light-border); border: 1px solid var(--light-border); border-radius: 6px; overflow: hidden; }
     .cal-dow { background: var(--ink); color: var(--sand); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; text-align: center; padding: .5rem 0; }
-    .cal-cell { background: white; min-height: 90px; padding: 6px; position: relative; vertical-align: top; }
+    .cal-cell { background: white; height: 90px; padding: 6px; position: relative; vertical-align: top; overflow: hidden; }
     .cal-cell.other-month { background: #faf8f4; }
     .cal-cell.today { background: #fffbf5; }
     .cal-cell.today .day-num { background: var(--terracotta); color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
-    .day-num { font-size: .78rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+    .day-num { font-size: .78rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .cal-cell.other-month .day-num { color: #ccc; }
 
     .cal-event { font-size: .68rem; border-radius: 3px; padding: 2px 5px; margin-bottom: 2px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default; }
@@ -85,6 +96,53 @@
     .del-btn { background: none; border: none; color: #a33; cursor: pointer; font-size: 1rem; padding: 0 4px; }
 
     #site { display: none; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      /* Nav */
+      nav { padding: 0 1.25rem; position: relative; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+
+      /* Layout: stack vertically, allow full scroll */
+      .page {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+      }
+
+      /* Calendar takes full width */
+      .cal-side {
+        padding: 1.25rem;
+        overflow-y: visible;
+      }
+
+      .cal-title { font-size: 1.25rem; }
+
+      /* Shrink cell height on mobile so calendar fits */
+      .cal-cell { height: 56px; padding: 4px; overflow: hidden; }
+      .cal-event { font-size: .6rem; padding: 1px 3px; margin-bottom: 1px; }
+      .cal-dow { font-size: .65rem; padding: .4rem 0; }
+
+      /* Sidebar: full width, no fixed height, normal flow */
+      .sidebar {
+        width: 100%;
+        height: auto;
+        border-left: none;
+        border-top: 1px solid var(--light-border);
+        padding: 1.5rem 1.25rem;
+        overflow: visible;
+      }
+
+      /* Upcoming list: show more, don't clip */
+      .upcoming-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      /* Admin box fits mobile screen */
+      .admin-box { width: calc(100% - 2rem); max-width: 360px; }
+    }
   </style>
 </head>
 <body>
@@ -100,7 +158,18 @@
     <li><a href="events.html" class="active">Events</a></li>
     <li><a href="family-tree.html">Family Tree</a></li>
   </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="nav-mobile" id="nav-mobile">
+  <a href="index.html" onclick="closeMenu()">Home</a>
+  <a href="yearbook.html" onclick="closeMenu()">The Family</a>
+  <a href="gallery.html" onclick="closeMenu()">Gallery</a>
+  <a href="events.html" onclick="closeMenu()">Events</a>
+  <a href="family-tree.html" onclick="closeMenu()">Family Tree</a>
+</div>
 
 <div class="page">
 
@@ -124,7 +193,7 @@
         <div class="legend-item"><div class="legend-dot" style="background:#FFF0E8;border:2px solid #C4714A;"></div> Family Event</div>
       </div>
     </div>
-    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+    <div style="display:flex;flex-direction:column;">
       <div class="sidebar-title">Upcoming Events</div>
       <div class="upcoming-list" id="upcoming-list"></div>
     </div>
@@ -249,7 +318,7 @@ const today = new Date();
 
 function init(){
   currentYear = today.getFullYear();
-  currentMonth = today.getMonth(); // 0-indexed
+  currentMonth = today.getMonth();
   render();
 }
 
@@ -264,7 +333,6 @@ function changeMonth(dir){
 }
 
 function getBirthdaysForCell(year, month, day){
-  // month is 0-indexed here
   return BIRTHDAYS.filter(b => b.month === month+1 && b.day === day);
 }
 
@@ -283,16 +351,13 @@ function render(){
   const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
 
   let html = '';
-  // Day of week headers
   DAYS.forEach(d => { html += `<div class="cal-dow">${d}</div>`; });
 
-  // Prev month fill
   for(let i=0; i<firstDay; i++){
     const d = daysInPrev - firstDay + 1 + i;
     html += `<div class="cal-cell other-month"><div class="day-num">${d}</div></div>`;
   }
 
-  // Current month
   for(let d=1; d<=daysInMonth; d++){
     const isToday = d===today.getDate() && currentMonth===today.getMonth() && currentYear===today.getFullYear();
     const bdays = getBirthdaysForCell(currentYear, currentMonth, d);
@@ -303,7 +368,6 @@ function render(){
     html += `<div class="cal-cell${isToday?' today':''}"><div class="day-num">${d}</div>${evHtml}</div>`;
   }
 
-  // Next month fill
   const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
   for(let i=1; i <= totalCells - firstDay - daysInMonth; i++){
     html += `<div class="cal-cell other-month"><div class="day-num">${i}</div></div>`;
@@ -318,7 +382,6 @@ function renderUpcoming(){
   now.setHours(0,0,0,0);
   const items = [];
 
-  // Next 90 days of birthdays
   for(let offset=0; offset<90; offset++){
     const d = new Date(now);
     d.setDate(d.getDate()+offset);
@@ -328,7 +391,6 @@ function renderUpcoming(){
     });
   }
 
-  // All future custom events
   loadCustomEvents().forEach(e=>{
     const d = new Date(e.date+'T00:00:00');
     if(d >= now) items.push({type:'custom', name:e.name, date:d, label: formatDate(d)});
@@ -407,6 +469,20 @@ function renderAdminList(){
     `).join('');
   document.getElementById('admin-events-list').innerHTML = html;
 }
+
+function toggleMenu(){
+  document.getElementById('nav-mobile').classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('nav-mobile').classList.remove('open');
+}
+document.addEventListener('click', function(e){
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('nav-mobile');
+  if(mobileNav && hamburger && !hamburger.contains(e.target) && !mobileNav.contains(e.target)){
+    mobileNav.classList.remove('open');
+  }
+});
 
 init();
 </script>
