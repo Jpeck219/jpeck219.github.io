@@ -131,19 +131,90 @@ const FAMILY = [{"id": "1", "first": "Shlomi", "last": "Sasi", "dob": "July 2, 1
 
 function fullName(p) { return (p.first + ' ' + p.last).trim(); }
 
+// Parse ID into segments. Each segment is [numericPart, letterSuffix].
+// "1"      → [[1, ""]]
+// "1A"     → [[1, "A"]]       — same depth as "1", letter is a tiebreaker
+// "1.1"    → [[1, ""], [1, ""]]
+// "1.1A"   → [[1, ""], [1, "A"]]
+// "7A.1"   → [[7, "A"], [1, ""]]
+function parseId(id) {
+  return id.split('.').map(seg => {
+    const m = seg.match(/^(\d+)([A-Z]?)$/);
+    if (m) return [parseInt(m[1], 10), m[2] || ''];
+    return [0, seg];
+  });
+}
+
+function compareIds(a, b) {
+  const pa = parseId(a), pb = parseId(b);
+  const len = Math.max(pa.length, pb.length);
+  for (let i = 0; i < len; i++) {
+    // If one ID is shorter (shallower), it comes first —
+    // UNLESS both have the same numeric prefix up to this depth,
+    // in which case the shorter one (parent/spouse) wins.
+    const segA = pa[i];
+    const segB = pb[i];
+
+    // One side has run out of segments — that side is shallower, comes first
+    if (!segA) return -1;
+    if (!segB) return 1;
+
+    const [na, la] = segA;
+    const [nb, lb] = segB;
+
+    if (na !== nb) return na - nb;
+
+    // Same number. Now: blank ("") < letter ("A","B") < going deeper (handled by next iteration)
+    // But a letter suffix means this IS the last segment for this person,
+    // while the other side may continue deeper. Letter-suffixed = same depth as blank,
+    // both before the next numeric child level.
+    // We detect this by checking if i is the last segment for each side.
+    const aIsLeafHere = (i === pa.length - 1);
+    const bIsLeafHere = (i === pb.length - 1);
+
+    if (aIsLeafHere && bIsLeafHere) {
+      // Both end here — sort blank before letter (person before spouse)
+      if (la === lb) return 0;
+      if (la === '') return -1;
+      if (lb === '') return 1;
+      return la < lb ? -1 : 1;
+    }
+
+    if (aIsLeafHere) {
+      // a ends here (person or spouse at this level), b goes deeper (child)
+      // person/spouse always comes before children
+      return -1;
+    }
+
+    if (bIsLeafHere) {
+      return 1;
+    }
+
+    // Neither ends here — same number, keep comparing next segment
+    // but if letters differ at a non-leaf, sort by letter first
+    if (la !== lb) {
+      if (la === '') return -1;
+      if (lb === '') return 1;
+      return la < lb ? -1 : 1;
+    }
+  }
+  return 0;
+}
+
 function renderGrid() {
   const q = document.getElementById('search-input').value.toLowerCase();
-  const filtered = FAMILY.filter(p => !q || fullName(p).toLowerCase().includes(q));
+  const all = [...FAMILY].sort((a, b) => compareIds(a.id, b.id));
+  const filtered = all.filter(p => !q || fullName(p).toLowerCase().includes(q));
   const grid = document.getElementById('card-grid');
   if (!filtered.length) {
     grid.innerHTML = '<div class="no-results">No family members found.</div>';
     return;
   }
   grid.innerHTML = '';
-  filtered.forEach((p, i) => {
+  filtered.forEach((p, idx) => {
     const card = document.createElement('div');
     card.className = 'profile-card';
-    card.addEventListener('click', function() { openModal(i, filtered); });
+    card.addEventListener('click', function() { openModal(idx, filtered); });
 
     if (p.photo) {
       const img = document.createElement('img');
