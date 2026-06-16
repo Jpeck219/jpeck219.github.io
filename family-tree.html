@@ -52,7 +52,7 @@ html,body{background:var(--sand);font-family:'Inter',sans-serif;color:var(--ink)
 .lsep{width:1px;height:12px;background:var(--sand2);margin:0 3px;}
 .lnote{font-size:11px;color:var(--ink-s);margin-left:auto;font-style:italic;}
 
-.scroll{overflow-x:auto;padding:28px 32px 60px;}
+.scroll{overflow:auto;padding:28px 32px 60px;cursor:grab;}
 
 .card{border-radius:9px;padding:7px 10px 6px;cursor:pointer;position:relative;width:112px;flex-shrink:0;transition:transform .13s,box-shadow .13s;user-select:none;}
 .card:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(44,33,24,.14);}
@@ -984,6 +984,35 @@ document.addEventListener('click',function(e){
   if(mobileNav&&hamburger&&!hamburger.contains(e.target)&&!mobileNav.contains(e.target)){
     mobileNav.classList.remove('open');
   }
+});
+
+// Mouse wheel scrolls the tree horizontally
+const scrollEl = document.querySelector('.scroll');
+scrollEl.addEventListener('wheel', function(e) {
+  e.preventDefault();
+  scrollEl.scrollLeft += e.deltaY + e.deltaX;
+}, { passive: false });
+
+// Click-drag panning
+let isDragging = false, startX, startY, startScrollLeft, startScrollTop;
+scrollEl.addEventListener('mousedown', function(e) {
+  if (e.button !== 0) return;
+  isDragging = true;
+  startX = e.clientX;
+  startY = e.clientY;
+  startScrollLeft = scrollEl.scrollLeft;
+  startScrollTop = scrollEl.scrollTop;
+  scrollEl.style.cursor = 'grabbing';
+  e.preventDefault();
+});
+document.addEventListener('mousemove', function(e) {
+  if (!isDragging) return;
+  scrollEl.scrollLeft = startScrollLeft - (e.clientX - startX);
+  scrollEl.scrollTop = startScrollTop - (e.clientY - startY);
+});
+document.addEventListener('mouseup', function() {
+  isDragging = false;
+  scrollEl.style.cursor = '';
 });
 </script>
 </div><!-- end sitecontents -->
