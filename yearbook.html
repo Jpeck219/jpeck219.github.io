@@ -3,119 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Family Directory · Sasi Family</title>
+  <title>The Family · Sasi Family</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --sand: #E8DCC8;
-      --parchment: #F5EFE0;
-      --terracotta: #C4714A;
-      --terracotta-dark: #9E5535;
-      --olive: #7A7A52;
-      --ink: #2E2A20;
-      --muted: #6B6353;
-      --light-border: rgba(122,122,82,0.25);
+      --sand: #E8DCC8; --parchment: #F5EFE0; --terracotta: #C4714A;
+      --terracotta-dark: #9E5535; --olive: #7A7A52; --ink: #2E2A20;
+      --muted: #6B6353; --light-border: rgba(122,122,82,0.25);
     }
     body { font-family: 'Lato', sans-serif; background: var(--parchment); color: var(--ink); min-height: 100vh; }
-
-    /* NAV */
     nav { background: var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; height: 60px; position: sticky; top: 0; z-index: 100; }
     .nav-brand { font-family: 'Playfair Display', serif; color: var(--sand); font-size: 1.25rem; letter-spacing: .08em; text-decoration: none; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a { color: var(--sand); text-decoration: none; font-size: .88rem; letter-spacing: .1em; text-transform: uppercase; opacity: .8; transition: opacity .2s; }
     .nav-links a:hover { opacity: 1; }
     .nav-links a.active { opacity: 1; border-bottom: 1px solid var(--terracotta); padding-bottom: 2px; }
-
-    /* PAGE HEADER */
     .page-header { text-align: center; padding: 3rem 2rem 2rem; border-bottom: 1px solid var(--light-border); }
     .page-header .eyebrow { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--terracotta); margin-bottom: .6rem; }
     .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--ink); margin-bottom: .5rem; }
     .page-header p { color: var(--muted); font-size: .95rem; }
-
-    /* SEARCH */
-    .search-bar { max-width: 400px; margin: 2rem auto 0; position: relative; }
+    .search-bar { max-width: 400px; margin: 1.5rem auto 0; position: relative; }
     .search-bar input { width: 100%; padding: .65rem 1rem .65rem 2.5rem; border: 1px solid var(--light-border); border-radius: 4px; background: white; font-size: .95rem; font-family: 'Lato', sans-serif; color: var(--ink); outline: none; }
     .search-bar input:focus { border-color: var(--terracotta); }
-    .search-bar .search-icon { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .9rem; pointer-events: none; }
-
-    /* GRID */
+    .search-icon { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
     .grid-wrap { max-width: 1100px; margin: 2.5rem auto 4rem; padding: 0 2rem; }
-    .alpha-section { margin-bottom: 2.5rem; }
-    .alpha-label { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--terracotta); border-bottom: 1px solid var(--light-border); padding-bottom: .4rem; margin-bottom: 1.2rem; }
-    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1.25rem; }
-
-    /* PROFILE CARD */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.25rem; }
     .profile-card { background: white; border: 1px solid var(--light-border); border-radius: 6px; overflow: hidden; cursor: pointer; transition: transform .2s, box-shadow .2s; text-align: center; }
     .profile-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(46,42,32,.1); }
-    .card-photo { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: var(--sand); display: block; }
+    .card-photo { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
     .card-photo-placeholder { width: 100%; aspect-ratio: 1/1; background: var(--sand); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--muted); }
     .card-body { padding: .75rem .6rem; }
     .card-name { font-size: .88rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
-    .card-dob { font-size: .75rem; color: var(--muted); margin-top: .25rem; }
-
-    /* MODAL */
+    .card-id { font-size: .7rem; color: var(--terracotta); margin-top: .2rem; letter-spacing: .04em; }
+    .card-dob { font-size: .75rem; color: var(--muted); margin-top: .2rem; }
     #modal-overlay { display: none; position: fixed; inset: 0; background: rgba(46,42,32,.55); z-index: 500; align-items: center; justify-content: center; padding: 1rem; }
     #modal-overlay.open { display: flex; }
     .modal { background: var(--parchment); border-radius: 8px; width: 100%; max-width: 480px; box-shadow: 0 24px 64px rgba(46,42,32,.2); overflow: hidden; position: relative; max-height: 90vh; overflow-y: auto; }
-    .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--muted); line-height: 1; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--muted); }
     .modal-close:hover { color: var(--ink); }
     .modal-top { display: flex; gap: 1.25rem; padding: 1.75rem 1.75rem 1.25rem; align-items: flex-start; }
-    .modal-photo { width: 100px; height: 100px; border-radius: 6px; object-fit: cover; background: var(--sand); flex-shrink: 0; }
+    .modal-photo { width: 100px; height: 100px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
     .modal-photo-placeholder { width: 100px; height: 100px; border-radius: 6px; background: var(--sand); display: flex; align-items: center; justify-content: center; font-size: 2.8rem; flex-shrink: 0; }
-    .modal-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--ink); margin-bottom: .3rem; }
+    .modal-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--ink); margin-bottom: .2rem; }
+    .modal-uid { font-size: .75rem; color: var(--terracotta); letter-spacing: .06em; margin-bottom: .3rem; }
     .modal-bio { font-size: .88rem; color: var(--muted); line-height: 1.7; margin-top: .4rem; }
     .modal-divider { height: 1px; background: var(--light-border); margin: 0 1.75rem; }
     .modal-details { padding: 1.25rem 1.75rem 1.75rem; display: flex; flex-direction: column; gap: .75rem; }
     .detail-row { display: flex; gap: .75rem; align-items: flex-start; }
     .detail-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--terracotta); width: 80px; flex-shrink: 0; padding-top: 1px; }
     .detail-value { font-size: .9rem; color: var(--ink); }
-    .detail-value.deceased { color: var(--muted); font-style: italic; }
     .detail-value a { color: var(--terracotta); text-decoration: none; }
     .detail-value a:hover { text-decoration: underline; }
-
-    /* NO RESULTS */
     .no-results { text-align: center; color: var(--muted); padding: 3rem; font-size: .95rem; }
-
     #site { display: none; }
   </style>
 </head>
 <body>
-
 <div id="site">
-
 <nav>
   <a class="nav-brand" href="index.html">Sasi Family</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
-    <li><a href="yearbook.html" class="active">Directory</a></li>
-    <li><a href="yearbook.html">The Family</a></li>
+    <li><a href="yearbook.html" class="active">The Family</a></li>
     <li><a href="gallery.html">Gallery</a></li>
     <li><a href="events.html">Events</a></li>
     <li><a href="family-tree.html">Family Tree</a></li>
   </ul>
 </nav>
-
 <div class="page-header">
   <p class="eyebrow">Sasi Family</p>
-  <h1>Family Directory</h1>
+  <h1>The Family</h1>
   <p>Click on any family member to view their profile.</p>
   <div class="search-bar">
     <span class="search-icon">🔍</span>
     <input type="text" id="search-input" placeholder="Search by name…" oninput="renderGrid()" />
   </div>
 </div>
-
-<div class="grid-wrap" id="grid-wrap"></div>
-
-<!-- MODAL -->
-<div id="modal-overlay" onclick="handleOverlayClick(event)">
-  <div class="modal" id="modal">
+<div class="grid-wrap"><div class="card-grid" id="card-grid"></div></div>
+<div id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
     <button class="modal-close" onclick="closeModal()">&#10005;</button>
     <div class="modal-top">
       <div id="modal-photo-wrap"></div>
       <div>
         <div class="modal-name" id="modal-name"></div>
+        <div class="modal-uid" id="modal-uid"></div>
         <div class="modal-bio" id="modal-bio"></div>
       </div>
     </div>
@@ -123,892 +96,149 @@
     <div class="modal-details" id="modal-details"></div>
   </div>
 </div>
-
-</div><!-- #site -->
-
+</div>
 <script>
-if(sessionStorage.getItem('sasi_auth')!=='1'){
-  window.location.href='index.html';
-} else {
-  document.getElementById('site').style.display='block';
-}
-
-// ── FAMILY DATA ──
-// To add a person, copy one of the objects below and fill in their details.
-// For photo: add their image file to GitHub and put the filename here (e.g. "jonathan.jpg")
-// Leave any unknown fields as empty string ""
-// deceased: leave as "" if alive, put date as "Month DD, YYYY" if passed
-
+if(sessionStorage.getItem('sasi_auth')!=='1'){window.location.href='index.html';}
+else{document.getElementById('site').style.display='block';}
 const FAMILY = [
-  {
-    first: "Jonathan",
-    last: "Peck",
-    photo: "", // e.g. "jonathan.jpg"
-    dob: "February 19, 1994",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Ethan",
-    last: "Peck",
-    photo: "",
-    dob: "July 15, 1991",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Zoey",
-    last: "Peck",
-    photo: "",
-    dob: "April 17, 1996",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Yuval",
-    last: "Peck",
-    photo: "",
-    dob: "January 4, 1998",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Liz",
-    last: "Peck",
-    photo: "",
-    dob: "December 5, 1958",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Robert",
-    last: "Peck",
-    photo: "",
-    dob: "November 28, 1959",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Shlomi",
-    last: "Sasi",
-    photo: "",
-    dob: "July 2, 1946",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Alfonso",
-    last: "Sasi",
-    photo: "",
-    dob: "November 26, 1949",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Nissim",
-    last: "Sasi",
-    photo: "",
-    dob: "April 28, 1951",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Avi",
-    last: "Sasi",
-    photo: "",
-    dob: "August 20, 1957",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Amos",
-    last: "Sasi",
-    photo: "",
-    dob: "April 25, 1960",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Benny",
-    last: "Sasi",
-    photo: "",
-    dob: "September 3, 1962",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Tzvika",
-    last: "Sasi",
-    photo: "",
-    dob: "January 11, 1964",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Eti",
-    last: "Sasi",
-    photo: "",
-    dob: "January 24, 1964",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Orna",
-    last: "Sasi",
-    photo: "",
-    dob: "April 6, 1959",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Anat",
-    last: "Sasi",
-    photo: "",
-    dob: "January 8, 1965",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Merav",
-    last: "Sasi",
-    photo: "",
-    dob: "September 22, 1969",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Hanit",
-    last: "Ben Bassat",
-    photo: "",
-    dob: "October 23, 1973",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Tzachi",
-    last: "Ben Bassat",
-    photo: "",
-    dob: "January 22, 1972",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Yifat",
-    last: "Sasi",
-    photo: "",
-    dob: "July 8, 1976",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Eilon",
-    last: "Sasi",
-    photo: "",
-    dob: "August 12, 1977",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Lily",
-    last: "Sasi",
-    photo: "",
-    dob: "January 28, 1978",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Dudu",
-    last: "Sasi",
-    photo: "",
-    dob: "August 15, 1978",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Hanit",
-    last: "Boaron",
-    photo: "",
-    dob: "September 20, 1978",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Inbal",
-    last: "",
-    photo: "",
-    dob: "November 6, 1979",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Dudik",
-    last: "Amira",
-    photo: "",
-    dob: "January 15, 1981",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Hila",
-    last: "Boaron",
-    photo: "",
-    dob: "February 17, 1982",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Yonit",
-    last: "Sasi",
-    photo: "",
-    dob: "February 24, 1984",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Dana",
-    last: "Cidor",
-    photo: "",
-    dob: "September 11, 1985",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Daniel",
-    last: "Cidor",
-    photo: "",
-    dob: "June 11, 1985",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Lital",
-    last: "Cidor",
-    photo: "",
-    dob: "May 20, 1986",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Ben",
-    last: "Sasi",
-    photo: "",
-    dob: "July 17, 1988",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Rotem",
-    last: "Sasi",
-    photo: "",
-    dob: "February 14, 1988",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Danielle",
-    last: "Sasi",
-    photo: "",
-    dob: "October 17, 1988",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Noa",
-    last: "Sasi",
-    photo: "",
-    dob: "July 16, 1990",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Lior",
-    last: "Sasi",
-    photo: "",
-    dob: "August 25, 1991",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Amit",
-    last: "Sasi",
-    photo: "",
-    dob: "October 3, 1992",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Dan",
-    last: "Sasi",
-    photo: "",
-    dob: "December 11, 1994",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Tal",
-    last: "Sasi",
-    photo: "",
-    dob: "December 11, 1994",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Amit",
-    last: "Sasi",
-    photo: "",
-    dob: "October 17, 1996",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Naama",
-    last: "Bornstein",
-    photo: "",
-    dob: "September 17, 1996",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Itamar",
-    last: "Bornstein",
-    photo: "",
-    dob: "November 26, 1996",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Tamar",
-    last: "Sasi",
-    photo: "",
-    dob: "September 19, 1999",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Guy",
-    last: "Sasi",
-    photo: "",
-    dob: "September 10, 2000",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Ron",
-    last: "Ben Bassat",
-    photo: "",
-    dob: "February 17, 2003",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Ori",
-    last: "Sasi",
-    photo: "",
-    dob: "December 23, 2004",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Aiden",
-    last: "Ben Bassat",
-    photo: "",
-    dob: "March 5, 2005",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Zohar",
-    last: "Sasi",
-    photo: "",
-    dob: "October 10, 2007",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Lihi",
-    last: "Sasi",
-    photo: "",
-    dob: "June 4, 2009",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Mia",
-    last: "Ben Bassat",
-    photo: "",
-    dob: "October 13, 2009",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Tahel",
-    last: "Sasi",
-    photo: "",
-    dob: "July 29, 2010",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Harel",
-    last: "Sasi",
-    photo: "",
-    dob: "September 12, 2011",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Oshri",
-    last: "Sasi",
-    photo: "",
-    dob: "May 15, 2011",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Gili",
-    last: "Shamian",
-    photo: "",
-    dob: "December 27, 1997",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Amit",
-    last: "Shamian",
-    photo: "",
-    dob: "November 8, 1996",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Limor",
-    last: "Amira",
-    photo: "",
-    dob: "January 7, 1976",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Avia",
-    last: "Amira",
-    photo: "",
-    dob: "November 21, 2014",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Hilel",
-    last: "Amira",
-    photo: "",
-    dob: "November 27, 2015",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Nevo",
-    last: "Amira",
-    photo: "",
-    dob: "July 13, 2017",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Imri",
-    last: "Amira",
-    photo: "",
-    dob: "July 13, 2017",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Talia",
-    last: "Sasi",
-    photo: "",
-    dob: "December 20, 2014",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Yoni",
-    last: "Sasi",
-    photo: "",
-    dob: "March 14, 1996",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Ethan",
-    last: "Cidor",
-    photo: "",
-    dob: "June 20, 2018",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Ori",
-    last: "Cidor",
-    photo: "",
-    dob: "December 31, 2020",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Yuval",
-    last: "Cidor",
-    photo: "",
-    dob: "December 12, 2020",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Abigail",
-    last: "Cidor",
-    photo: "",
-    dob: "January 31, 2025",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Dor",
-    last: "Sasi",
-    photo: "",
-    dob: "February 15, 2022",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Adi",
-    last: "Sasi",
-    photo: "",
-    dob: "June 19, 2024",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Gali",
-    last: "Boaron",
-    photo: "",
-    dob: "April 3, 1953",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Berto",
-    last: "Boaron",
-    photo: "",
-    dob: "December 8, 1947",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Sari",
-    last: "Cidor",
-    photo: "",
-    dob: "July 14, 1961",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Omri",
-    last: "Cidor",
-    photo: "",
-    dob: "June 13, 1959",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Ido",
-    last: "Cidor",
-    photo: "",
-    dob: "March 4, 1987",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
-  {
-    first: "Guy",
-    last: "Sasi",
-    photo: "",
-    dob: "November 1974",
-    deceased: "",
-    phone: "",
-    email: "",
-    bio: ""
-  },
+  {id:"1",first:"Shlomi",last:"Sasi",dob:"July 2, 1946",age:"79",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"1.1",first:"Yaron",last:"Sasi",dob:"",age:"",email:"",phone:"+972-54-740-1030",photo:"",bio:"",deceased:""},
+  {id:"1.1.1",first:"Kfir",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"1.1.2",first:"Noam",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"1.1A",first:"Hila",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"1.2",first:"Guy",last:"Sasi",dob:"11/1974",age:"51",email:"",phone:"+972-54-833-9319",photo:"",bio:"",deceased:""},
+  {id:"1.2.1",first:"Lihi",last:"Sasi",dob:"June 4, 2009",age:"17",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"1.2.2",first:"Tahel",last:"Sasi",dob:"July 29, 2010",age:"15",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"1.2.3",first:"Harel",last:"Sasi",dob:"September 12, 2011",age:"14",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"1.2A",first:"Yonit",last:"Sasi",dob:"February 24, 1984",age:"42",email:"",phone:"+972-54-455-5626",photo:"",bio:"",deceased:""},
+  {id:"1A",first:"Yudit",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"2",first:"Alfonso",last:"Sasi",dob:"November 26, 1949",age:"76",email:"alfonsosasy@gmail.com",phone:"+972-50-527-5875",photo:"",bio:"",deceased:""},
+  {id:"2.1",first:"Hanit",last:"Ben Bassat",dob:"October 23, 1973",age:"52",email:"hanit@me.com",phone:"+1(407)927-9759",photo:"",bio:"",deceased:""},
+  {id:"2.1.1",first:"Ron",last:"Ben Bassat",dob:"February 17, 2003",age:"23",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"2.1.2",first:"Aiden",last:"Ben Bassat",dob:"March 5, 2005",age:"21",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"2.1.3",first:"Mia",last:"Ben Bassat",dob:"October 13, 2009",age:"16",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"2.1A",first:"Tzachi",last:"Ben Bassat",dob:"January 22, 1972",age:"54",email:"",phone:"+1(407)927-9758",photo:"",bio:"",deceased:""},
+  {id:"2.2",first:"Yifat",last:"Sasi",dob:"July 8, 1976",age:"49",email:"yifatsasi00@gmail.com",phone:"+972-50-744-2805",photo:"",bio:"",deceased:""},
+  {id:"2.3",first:"Eilon",last:"Sasi",dob:"August 12, 1977",age:"48",email:"eilonsasi@gmail.com",phone:"+972-50-666-6747",photo:"",bio:"",deceased:""},
+  {id:"2.3.1",first:"Ori",last:"Sasi",dob:"December 23, 2004",age:"21",email:"orisasi1990@gmail.com",phone:"+972-52-330-3330",photo:"",bio:"",deceased:""},
+  {id:"2.3.2",first:"Zohar",last:"Sasi",dob:"October 10, 2007",age:"18",email:"sasizohar10@gmail.com",phone:"+972-54-833-3192",photo:"",bio:"",deceased:""},
+  {id:"2.3.3",first:"Oshri",last:"Sasi",dob:"May 15, 2011",age:"15",email:"oshrisasi@gmail.com",phone:"+972-50-666-1911",photo:"",bio:"",deceased:""},
+  {id:"2.3.4",first:"Talia",last:"Sasi",dob:"December 20, 2014",age:"11",email:"talyasasi14@gmail.com",phone:"+972-52-229-6795",photo:"",bio:"",deceased:""},
+  {id:"2.3A",first:"Lily",last:"Sasi",dob:"January 28, 1978",age:"48",email:"lilysasi1@gmail.com",phone:"+972-50-666-6737",photo:"",bio:"",deceased:""},
+  {id:"2A",first:"Eti",last:"Sasi",dob:"November 13, 1953",age:"72",email:"etysasy@hotmail.com",phone:"+972-50-990-0689",photo:"",bio:"",deceased:""},
+  {id:"3",first:"Nissim",last:"Sasi",dob:"April 28, 1951",age:"75",email:"sassinissim@gmail.com",phone:"+972-50-523-9054",photo:"",bio:"",deceased:""},
+  {id:"3.1",first:"Dan",last:"Sasi",dob:"December 11, 1994",age:"31",email:"talsasi15@gmail.com",phone:"+972-50-881-7906",photo:"",bio:"",deceased:""},
+  {id:"3.2",first:"Tal",last:"Sasi",dob:"December 11, 1994",age:"31",email:"dan.sasi60@gmail.com",phone:"+972-50-571-1976",photo:"",bio:"",deceased:""},
+  {id:"3.2A",first:"Amit",last:"Sasi",dob:"October 17, 1996",age:"29",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"3A",first:"Eti",last:"",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"4",first:"Gali",last:"Boaron",dob:"April 3, 1953",age:"73",email:"galiboaron@gmail.com",phone:"+972-52-597-6515",photo:"",bio:"",deceased:""},
+  {id:"4.1",first:"Limor",last:"Amira",dob:"January 7, 1976",age:"50",email:"limortripo@gmail.com",phone:"+972-54-817-4477",photo:"",bio:"",deceased:""},
+  {id:"4.1.1",first:"Avia",last:"Amira",dob:"November 21, 2014",age:"11",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"4.1.2",first:"Hilel",last:"Amira",dob:"November 27, 2015",age:"10",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"4.1.3",first:"Nevo",last:"Amira",dob:"July 13, 2017",age:"8",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"4.1.4",first:"Imri",last:"Amira",dob:"July 13, 2017",age:"8",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"4.1A",first:"Dudik",last:"Amira",dob:"January 15, 1981",age:"45",email:"dudikamira@gmail.com",phone:"+972-52-520-884",photo:"",bio:"",deceased:""},
+  {id:"4.2",first:"Hanit",last:"Boaron",dob:"September 20, 1978",age:"47",email:"hanaleb@gmail.com",phone:"+972-54-635-4701",photo:"",bio:"",deceased:""},
+  {id:"4.3",first:"Hila",last:"Boaron",dob:"February 17, 1982",age:"44",email:"hillaboaron@gmail.com",phone:"+972-52-536-2533",photo:"",bio:"",deceased:""},
+  {id:"4A",first:"Berto",last:"Boaron",dob:"December 8, 1947",age:"78",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5",first:"Yossi",last:"Sasi",dob:"",age:"",email:"sadr1@barak.net.il",phone:"+972-54-566-6331",photo:"",bio:"",deceased:""},
+  {id:"5.1",first:"Dudu",last:"Sasi",dob:"August 15, 1978",age:"47",email:"dudusasi@gmail.com",phone:"+972-54-566-6336",photo:"",bio:"",deceased:""},
+  {id:"5.1.1",first:"Liad",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.1.2",first:"Eilay",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.1.3",first:"Emma",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.1.4",first:"Elle",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.1A",first:"Moran",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.1B",first:"Daria",last:"Biton",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.2",first:"Ran",last:"Sasi",dob:"",age:"",email:"sasiran@gmail.com",phone:"+972-54-566-6345",photo:"",bio:"",deceased:""},
+  {id:"5.2.1",first:"Orel",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.2.2",first:"Libby",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.2.3",first:"Sol",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.2A",first:"Kohavit",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.3",first:"Ben",last:"Sasi",dob:"July 17, 1988",age:"37",email:"bensasi177@gmail.com",phone:"+972-54-566-6337",photo:"",bio:"",deceased:""},
+  {id:"5.3.1",first:"Dor",last:"Sasi",dob:"February 15, 2022",age:"4",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.3.2",first:"Adi",last:"Sasi",dob:"June 19, 2024",age:"1",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.3.3",first:"Adar Yoseph",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.3A",first:"Rotem",last:"Sasi",dob:"February 14, 1988",age:"38",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.4",first:"Ariel",last:"Sasi",dob:"",age:"",email:"arielsasi007@gmail.com",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.4.1",first:"Agam",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5.4A",first:"Noy",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"5A",first:"Dorit",last:"Sasi",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"6",first:"Malka",last:"Shmuel",dob:"",age:"",email:"",phone:"+972-50-893-0638",photo:"",bio:"",deceased:""},
+  {id:"6.1",first:"Shiran",last:"Shmuel",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"6.2",first:"Michal",last:"Shmuel",dob:"",age:"",email:"michalshmuel19@gmail.com",phone:"+972-50-893-0684",photo:"",bio:"",deceased:""},
+  {id:"6A",first:"Itzhik",last:"Shmuel",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"7",first:"Avi",last:"Sasi",dob:"August 20, 1957",age:"68",email:"sasiavi1@walla.com",phone:"+972-50-523-3893",photo:"",bio:"",deceased:""},
+  {id:"7.1",first:"Noa",last:"Sasi",dob:"July 16, 1990",age:"35",email:"",phone:"+972-50-821-0399",photo:"",bio:"",deceased:""},
+  {id:"7.2",first:"Amit",last:"Sasi",dob:"October 3, 1992",age:"33",email:"",phone:"+972-50-821-0398",photo:"",bio:"",deceased:""},
+  {id:"7A",first:"Orna",last:"Sasi",dob:"April 6, 1959",age:"67",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"7A.1",first:"Inbal",last:"",dob:"November 6, 1979",age:"46",email:"sinbal2@walla.com",phone:"+972-50-797-3022",photo:"",bio:"",deceased:""},
+  {id:"7A.1.1",first:"Ilai",last:"",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"7A.1.2",first:"Itai",last:"",dob:"",age:"",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"8",first:"Liz",last:"Peck",dob:"December 5, 1958",age:"67",email:"sassylizp@aol.com",phone:"+1(516)650-4495",photo:"",bio:"",deceased:""},
+  {id:"8.1",first:"Ethan",last:"Peck",dob:"July 15, 1991",age:"34",email:"ebpeck91@gmail.com",phone:"+1(516)993-3211",photo:"",bio:"",deceased:""},
+  {id:"8.1A",first:"Yuval",last:"Peck",dob:"January 4, 1998",age:"28",email:"yuvalgphotography@gmail.com",phone:"+972-50-909-1709",photo:"",bio:"",deceased:""},
+  {id:"8.2",first:"Jonathan",last:"Peck",dob:"February 19, 1994",age:"32",email:"jpeck219@gmail.com",phone:"+972-54-979-5673",photo:"",bio:"",deceased:""},
+  {id:"8.3",first:"Zoey",last:"Peck",dob:"April 17, 1996",age:"30",email:"zoeypeck@gmail.com",phone:"+1(516)993-8680",photo:"",bio:"",deceased:""},
+  {id:"8A",first:"Robert",last:"Peck",dob:"November 28, 1959",age:"66",email:"robertp@legacywps.com",phone:"+1(917)596-0825",photo:"",bio:"",deceased:""},
+  {id:"9",first:"Amos",last:"Sasi",dob:"April 25, 1960",age:"66",email:"amossasi@gmail.com",phone:"+972-50-523-2886",photo:"",bio:"",deceased:""},
+  {id:"9.1",first:"Gili",last:"Shamian",dob:"December 27, 1997",age:"28",email:"gilisava1@gmail.com",phone:"+972-50-2155113",photo:"",bio:"",deceased:""},
+  {id:"9.1A",first:"Amit",last:"Shamian",dob:"November 8, 1996",age:"29",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"9.2",first:"Guy",last:"Sasi",dob:"September 10, 2000",age:"25",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"9A",first:"Anat",last:"Sasi",dob:"January 8, 1965",age:"61",email:"",phone:"+972-505758407",photo:"",bio:"",deceased:""},
+  {id:"10",first:"Sari",last:"Cidor",dob:"July 14, 1961",age:"64",email:"saricidor@gmail.com",phone:"+972-50-525-4929",photo:"",bio:"",deceased:""},
+  {id:"10.1",first:"Dana",last:"Cidor",dob:"September 11, 1985",age:"40",email:"danacidor@gmail.com",phone:"+972-54-769-0317",photo:"",bio:"",deceased:""},
+  {id:"10.1.1",first:"Yuval",last:"Cidor",dob:"December 12, 2020",age:"5",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"10.1A",first:"Daniel",last:"Cidor",dob:"June 11, 1985",age:"41",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"10.2",first:"Ido",last:"Cidor",dob:"March 4, 1987",age:"39",email:"idocidor@gmail.com",phone:"+972-54-584-7588",photo:"",bio:"",deceased:""},
+  {id:"10.2.1",first:"Ethan",last:"Cidor",dob:"June 20, 2018",age:"7",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"10.2.2",first:"Ori",last:"Cidor",dob:"December 31, 2020",age:"5",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"10.2.3",first:"Abigail",last:"Cidor",dob:"January 31, 2025",age:"1",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"10.2A",first:"Lital",last:"Cidor",dob:"May 20, 1986",age:"40",email:"",phone:"",photo:"",bio:"",deceased:""},
+  {id:"10A",first:"Omri",last:"Cidor",dob:"June 13, 1959",age:"67",email:"omri.c2005@gmail.com",phone:"+972-52-208-2032",photo:"",bio:"",deceased:""},
+  {id:"11",first:"Benny",last:"Sasi",dob:"September 3, 1962",age:"63",email:"sasibe@012.net.il",phone:"+972-50-943-3367",photo:"",bio:"",deceased:""},
+  {id:"11.1",first:"Danielle",last:"Sasi",dob:"October 17, 1988",age:"37",email:"dnlssdnl@gmail.com",phone:"+972-50-533-3132",photo:"",bio:"",deceased:""},
+  {id:"11.2",first:"Lior",last:"Sasi",dob:"August 25, 1991",age:"34",email:"liorsassy@gmail.com",phone:"+972-50-900-7949",photo:"",bio:"",deceased:""},
+  {id:"11.3",first:"Yoni",last:"Sasi",dob:"March 14, 1996",age:"30",email:"yonatansassy129@gmail.com",phone:"+972-50-733-3138",photo:"",bio:"",deceased:""},
+  {id:"11A",first:"Eti",last:"Sasi",dob:"January 24, 1964",age:"62",email:"",phone:"+972-50-628-2757",photo:"",bio:"",deceased:""},
+  {id:"12",first:"Tzvika",last:"Sasi",dob:"January 11, 1964",age:"62",email:"tzvisasi@gmail.com",phone:"+972-50-521-3312",photo:"",bio:"",deceased:""},
+  {id:"12.1",first:"Naama",last:"Bornstein",dob:"September 17, 1996",age:"29",email:"Naamasasi@gmail.com",phone:"+972-505758401",photo:"",bio:"",deceased:""},
+  {id:"12.1A",first:"Itamar",last:"Bornstein",dob:"November 26, 1996",age:"29",email:"Itamarb01@gmail.com",phone:"+972-54-659-4566",photo:"",bio:"",deceased:""},
+  {id:"12.2",first:"Tamar",last:"Sasi",dob:"September 19, 1999",age:"26",email:"tamarsasi@gmail.com",phone:"+972-50-201-0303",photo:"",bio:"",deceased:""},
+  {id:"12A",first:"Merav",last:"Sasi",dob:"September 22, 1969",age:"56",email:"Meravisasi@gmail.com",phone:"+972-50-523-7188",photo:"",bio:"",deceased:""},
 ];
-
-// ── HELPERS ──
-function calcAge(dobStr, deceasedStr) {
-  if (!dobStr || dobStr.length < 4) return null;
-  const dob = new Date(dobStr);
-  if (isNaN(dob)) return null;
-  const end = deceasedStr ? new Date(deceasedStr) : new Date();
-  let age = end.getFullYear() - dob.getFullYear();
-  const m = end.getMonth() - dob.getMonth();
-  if (m < 0 || (m === 0 && end.getDate() < dob.getDate())) age--;
-  return age;
+function fullName(p){return(p.first+' '+p.last).trim();}
+function renderGrid(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  const filtered=FAMILY.filter(p=>!q||fullName(p).toLowerCase().includes(q));
+  const grid=document.getElementById('card-grid');
+  if(!filtered.length){grid.innerHTML='<div class="no-results">No family members found.</div>';return;}
+  grid.innerHTML=filtered.map(p=>{
+    const photoHtml=p.photo
+      ?`<img class="card-photo" src="photos/${p.photo}" alt="${fullName(p)}" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`+ `<div class="card-photo-placeholder" style="display:none">👤</div>`
+      :`<div class="card-photo-placeholder">👤</div>`;
+    return `<div class="profile-card" onclick='openModal(${JSON.stringify(JSON.stringify(p)).slice(1,-1)})'>${photoHtml}<div class="card-body"><div class="card-name">${fullName(p)}</div><div class="card-id">${p.id}</div>${p.age?`<div class="card-dob">Age ${p.age}</div>`:p.dob?`<div class="card-dob">${p.dob}</div>`:''}</div></div>`;
+  }).join('');
 }
-
-function fullName(p) { return (p.first + ' ' + p.last).trim(); }
-
-function sortedFamily() {
-  return [...FAMILY].sort((a, b) => {
-    const la = a.last || a.first, lb = b.last || b.first;
-    return la.localeCompare(lb) || a.first.localeCompare(b.first);
-  });
-}
-
-function photoEl(p, size='card') {
-  if (p.photo) {
-    const img = document.createElement(size === 'modal' ? 'img' : 'img');
-    img.src = `photos/${p.photo}`;
-    img.alt = fullName(p);
-    img.className = size === 'modal' ? 'modal-photo' : 'card-photo';
-    img.onerror = () => { img.replaceWith(placeholderEl(size)); };
-    return img;
-  }
-  return placeholderEl(size);
-}
-
-function placeholderEl(size) {
-  const div = document.createElement('div');
-  div.className = size === 'modal' ? 'modal-photo-placeholder' : 'card-photo-placeholder';
-  div.textContent = '👤';
-  return div;
-}
-
-// ── RENDER GRID ──
-function renderGrid() {
-  const query = document.getElementById('search-input').value.toLowerCase().trim();
-  const sorted = sortedFamily().filter(p =>
-    !query || fullName(p).toLowerCase().includes(query)
-  );
-
-  const wrap = document.getElementById('grid-wrap');
-  if (!sorted.length) {
-    wrap.innerHTML = '<div class="no-results">No family members found.</div>';
-    return;
-  }
-
-  // Group by first letter of last name (or first name if no last)
-  const groups = {};
-  sorted.forEach(p => {
-    const key = (p.last || p.first)[0].toUpperCase();
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(p);
-  });
-
-  wrap.innerHTML = '';
-  Object.keys(groups).sort().forEach(letter => {
-    const section = document.createElement('div');
-    section.className = 'alpha-section';
-    section.innerHTML = `<div class="alpha-label">${letter}</div>`;
-    const grid = document.createElement('div');
-    grid.className = 'card-grid';
-    groups[letter].forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'profile-card';
-      card.onclick = () => openModal(p);
-      const photo = photoEl(p, 'card');
-      const body = document.createElement('div');
-      body.className = 'card-body';
-      const age = calcAge(p.dob, p.deceased);
-      body.innerHTML = `
-        <div class="card-name">${fullName(p)}</div>
-        ${p.dob ? `<div class="card-dob">${age !== null ? (p.deceased ? `${age} · Passed` : `Age ${age}`) : p.dob}</div>` : ''}
-      `;
-      card.appendChild(photo);
-      card.appendChild(body);
-      grid.appendChild(card);
-    });
-    section.appendChild(grid);
-    wrap.appendChild(section);
-  });
-}
-
-// ── MODAL ──
-function openModal(p) {
-  document.getElementById('modal-name').textContent = fullName(p);
-  document.getElementById('modal-bio').textContent = p.bio || '';
-
-  const photoWrap = document.getElementById('modal-photo-wrap');
-  photoWrap.innerHTML = '';
-  photoWrap.appendChild(photoEl(p, 'modal'));
-
-  const age = calcAge(p.dob, p.deceased);
-  let detailsHtml = '';
-
-  if (p.dob) detailsHtml += row('Date of Birth', p.dob);
-  if (age !== null) detailsHtml += row('Age', p.deceased ? `${age} (at passing)` : String(age));
-  if (p.deceased) detailsHtml += row('Passed Away', `<span class="deceased">${p.deceased}</span>`);
-  if (p.phone) detailsHtml += row('Phone', `<a href="tel:${p.phone}">${p.phone}</a>`);
-  if (p.email) detailsHtml += row('Email', `<a href="mailto:${p.email}">${p.email}</a>`);
-
-  document.getElementById('modal-details').innerHTML = detailsHtml || '<span style="color:var(--muted);font-size:.88rem;">No additional details yet.</span>';
+function openModal(pJson){
+  const p=JSON.parse(pJson);
+  document.getElementById('modal-name').textContent=fullName(p);
+  document.getElementById('modal-uid').textContent='Family ID: '+p.id;
+  document.getElementById('modal-bio').textContent=p.bio||'';
+  const w=document.getElementById('modal-photo-wrap');
+  w.innerHTML=p.photo?`<img class="modal-photo" src="photos/${p.photo}" alt="${fullName(p)}" onerror="this.outerHTML='<div class=modal-photo-placeholder>👤</div>'">`:`<div class="modal-photo-placeholder">👤</div>`;
+  let d='';
+  if(p.dob) d+=row('Date of Birth',p.dob);
+  if(p.age) d+=row('Age',p.deceased?p.age+' (at passing)':p.age);
+  if(p.deceased) d+=row('Passed Away',p.deceased);
+  if(p.phone) d+=row('Phone',`<a href="tel:${p.phone}">${p.phone}</a>`);
+  if(p.email) d+=row('Email',`<a href="mailto:${p.email}">${p.email}</a>`);
+  document.getElementById('modal-details').innerHTML=d||'<span style="color:var(--muted);font-size:.88rem;">No additional details yet.</span>';
   document.getElementById('modal-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
-
-function row(label, value) {
-  return `<div class="detail-row"><div class="detail-label">${label}</div><div class="detail-value">${value}</div></div>`;
-}
-
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
+function row(l,v){return `<div class="detail-row"><div class="detail-label">${l}</div><div class="detail-value">${v}</div></div>`;}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 renderGrid();
 </script>
 </body>
