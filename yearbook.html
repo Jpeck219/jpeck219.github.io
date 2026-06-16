@@ -19,6 +19,18 @@
     .nav-links a { color: var(--sand); text-decoration: none; font-size: .88rem; letter-spacing: .1em; text-transform: uppercase; opacity: .8; transition: opacity .2s; }
     .nav-links a:hover { opacity: 1; }
     .nav-links a.active { opacity: 1; border-bottom: 1px solid var(--terracotta); padding-bottom: 2px; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: var(--sand); border-radius: 2px; }
+    .nav-mobile { display: none; position: absolute; top: 60px; left: 0; right: 0; background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08); z-index: 99; flex-direction: column; }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { color: var(--sand); text-decoration: none; font-size: .9rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; padding: 1rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.06); transition: opacity .2s, background .2s; }
+    .nav-mobile a:hover { opacity: 1; background: rgba(255,255,255,0.05); }
+    .nav-mobile a:last-child { border-bottom: none; }
+    @media (max-width: 768px) {
+      nav { padding: 0 1.25rem; position: relative; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+    }
     .page-header { text-align: center; padding: 3rem 2rem 2rem; border-bottom: 1px solid var(--light-border); }
     .page-header .eyebrow { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--terracotta); margin-bottom: .6rem; }
     .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--ink); margin-bottom: .5rem; }
@@ -70,7 +82,17 @@
     <li><a href="events.html">Events</a></li>
     <li><a href="family-tree.html">Family Tree</a></li>
   </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="index.html" onclick="closeMenu()">Home</a>
+  <a href="yearbook.html" onclick="closeMenu()">The Family</a>
+  <a href="gallery.html" onclick="closeMenu()">Gallery</a>
+  <a href="events.html" onclick="closeMenu()">Events</a>
+  <a href="family-tree.html" onclick="closeMenu()">Family Tree</a>
+</div>
 <div class="page-header">
   <p class="eyebrow">Sasi Family</p>
   <h1>The Family</h1>
@@ -207,6 +229,20 @@ document.getElementById('modal-overlay').addEventListener('click', function(e) {
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 
 renderGrid();
+
+function toggleMenu() {
+  document.getElementById('nav-mobile').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('nav-mobile').classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('nav-mobile');
+  if (mobileNav && hamburger && !hamburger.contains(e.target) && !mobileNav.contains(e.target)) {
+    mobileNav.classList.remove('open');
+  }
+});
 </script>
 </body>
 </html>
